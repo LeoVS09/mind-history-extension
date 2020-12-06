@@ -1,12 +1,25 @@
-# mind-history-extension
+# Mind History Extension
 
-Browser extension for organise pages
+Browser extension for organise pages.
+
+## Idea
+
+I (and hope many others) allways have dozens open pages while searching some info or learnign something new in Web.
+
+And most of time all of this pages need, but not now.
+But when I remember, some page which I was found have info which need right now I cannot find it, because I already closed it.
+
+For easier search in already opened pages or pages which I was opened in past I created this extension.
+
+## Status
+
+In development.
 
 ## Installing and Running
 
 Based on [boilerplate](https://github.com/lxieyang/chrome-extension-boilerplate-react)
 
-### Procedures:
+### Procedures
 
 1. Check if your [Node.js](https://nodejs.org/) version is >= **14**.
 2. Clone this repository.
@@ -35,8 +48,8 @@ To make your workflow much more efficient this boilerplate uses the [webpack ser
 
 You can run the dev mode on other port if you want. Just specify the env var `port` like this:
 
-```
-$ PORT=6002 npm run start
+```bash
+PORT=6002 npm run start
 ```
 
 ## Content Scripts
@@ -81,30 +94,8 @@ Thanks to [@hudidit](https://github.com/lxieyang/chrome-extension-boilerplate-re
 
 After the development of your extension run the command
 
-```
-$ NODE_ENV=production npm run build
+```bash
+NODE_ENV=production npm run build
 ```
 
 Now, the content of `build` folder will be the extension ready to be submitted to the Chrome Web Store. Just take a look at the [official guide](https://developer.chrome.com/webstore/publish) to more infos about publishing.
-
-## Secrets
-
-If you are developing an extension that talks with some API you probably are using different keys for testing and production. Is a good practice you not commit your secret keys and expose to anyone that have access to the repository.
-
-To this task this boilerplate import the file `./secrets.<THE-NODE_ENV>.js` on your modules through the module named as `secrets`, so you can do things like this:
-
-_./secrets.development.js_
-
-```js
-export default { key: '123' };
-```
-
-_./src/popup.js_
-
-```js
-import secrets from 'secrets';
-ApiCall({ key: secrets.key });
-```
-
-:point_right: The files with name `secrets.*.js` already are ignored on the repository.
-
