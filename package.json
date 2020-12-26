@@ -8,8 +8,8 @@
     "url": "https://github.com/LeoVS09/mind-history-extension.git"
   },
   "scripts": {
-    "build": "node utils/build.js",
-    "start": "node utils/webserver.js",
+    "build": "node build/production.js",
+    "start": "node build/dev-server.js",
     "prettier": "prettier --write '**/*.{js,jsx,css,html}'"
   },
   "dependencies": {

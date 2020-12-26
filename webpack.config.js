@@ -1,7 +1,7 @@
 var webpack = require('webpack'),
   path = require('path'),
   fileSystem = require('fs-extra'),
-  env = require('./utils/env'),
+  env = require('./build/env'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
@@ -46,7 +46,7 @@ var options = {
     notHotReload: ['contentScript'],
   },
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
     publicPath: ASSET_PATH,
   },
@@ -107,7 +107,7 @@ var options = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    // clean the build folder
+    // clean the dist folder
     new CleanWebpackPlugin({
       verbose: true,
       cleanStaleWebpackAssets: true,
@@ -118,7 +118,7 @@ var options = {
       patterns: [
         {
           from: 'src/manifest.json',
-          to: path.join(__dirname, 'build'),
+          to: path.join(__dirname, 'dist'),
           force: true,
           transform: function (content, path) {
             // generates the manifest file using the package.json informations
@@ -137,7 +137,7 @@ var options = {
       patterns: [
         {
           from: 'src/pages/Content/content.styles.css',
-          to: path.join(__dirname, 'build'),
+          to: path.join(__dirname, 'dist'),
           force: true,
         },
       ],
