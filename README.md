@@ -2,14 +2,14 @@
 
 Browser extension for organise pages.
 
-## Idea
+Main goal of extensions allow easily search and learn new information in WEB.
+Extension saves all pages which you open, organise them based on what information you was try to find\learn and close old pages.
+Extension allow for people, like I, which allways have thouthands open pages, organaise and not lose information, and of course not lose time to search this information again.
 
-I (and hope many others) allways have dozens open pages while searching some info or learnign something new in Web.
+## Project stage
 
-And most of time all of this pages need, but not now.
-But when I remember, some page which I was found have info which need right now I cannot find it, because I already closed it.
-
-For easier search in already opened pages or pages which I was opened in past I created this extension.
+Project currently in POC stage,
+which mean I only trying understand is it possible to receive all requirement data and control opened pages thought browser API.
 
 ## Development
 
