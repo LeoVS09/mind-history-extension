@@ -1,5 +1,6 @@
 import { getTabGrantedData } from "./types/access";
 import { isLoaded } from "./types/guards";
+import { store, actions } from "./store";
 
 export function registerOnTabOpenHook() {
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -11,7 +12,24 @@ export function registerOnTabOpenHook() {
 
         console.log(`Tab "${title}" has been loaded.`);
     })
-    console.log('tabs.onUpdated hook registered')
+
+    chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
+        chrome.tabs.get(tabId, tab => {
+            console.log('Active page changed to', tab.title, 'with url', tab.url, tab);
+
+            if (!tab.url) {
+                console.warn('Active tab not have url')
+                return
+            }
+
+            store.dispatch(actions.setCurrentPage({
+                url: tab.url,
+                title: tab.title,
+                favIconUrl: tab.favIconUrl
+            }))
+        })
+
+    })
 
 }
 
