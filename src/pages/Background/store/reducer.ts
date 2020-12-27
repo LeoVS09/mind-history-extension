@@ -1,20 +1,50 @@
-import { createReducer, PayloadAction } from "@reduxjs/toolkit";
-import { Page, PageHistory, PageVisit } from "../../../history";
-import { openPage, setCurrentPage } from "./actions";
+import { createReducer } from "@reduxjs/toolkit";
+import { PageData, PageVisit } from "../../../history";
+import * as actions from "./actions";
 
+export interface PageDataDictanory {
+    [url: string]: PageData
+}
 export interface PagesStore {
-    current?: Page
-    history: Array<PageVisit> // redux not allow usage of classes
+    current?: string
+    history: Array<PageVisit>
+    pages: PageDataDictanory
 }
 
 export const pagesReducer = createReducer<PagesStore>({
-    history: []
+    history: [],
+    pages: {}
 }, {
-    [setCurrentPage.type]: (state, { payload: page }: ReturnType<typeof setCurrentPage>) => {
-        state.current = page;
+
+    [actions.setCurrentPage.type]: (state, { payload: url }: ReturnType<typeof actions.setCurrentPage>) => {
+        state.current = url;
     },
-    [openPage.type]: (state, { payload: { page, time } }: ReturnType<typeof openPage>) => {
-        const history = new PageHistory(state.history)
-        history.push(page, time, state.current && { ...state.current });
+
+    [actions.openPage.type]: (state, { payload: { url, time } }: ReturnType<typeof actions.openPage>) => {
+        state.history.push({
+            from: state.current,
+            to: url,
+            time
+        });
+        printHistory(state.history);
+    },
+
+    [actions.savePageData.type]: (state, { payload: { url, page } }: ReturnType<typeof actions.savePageData>) => {
+        // Need prevent overriding fields with data, by undefined values
+        const oldData = state.pages[url]
+        state.pages[url] = {
+            title: page.title || oldData?.title,
+            favIconUrl: page.favIconUrl || oldData?.favIconUrl,
+        }
+        console.log('Page data saved', state)
     }
 })
+
+const printHistory = (history: Array<PageVisit>) => {
+    const result = []
+    for (const visit of history) {
+        result.push(`${visit.from} -> ${visit.to} | ${new Date(visit.time)}`)
+    }
+
+    console.log(result.join('\n\n '))
+}
