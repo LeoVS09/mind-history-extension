@@ -1,10 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { PageData, PageVisit } from "../../../history";
+import { PageDataDictanory } from "../../../types";
 import * as actions from "./actions";
-
-export interface PageDataDictanory {
-    [url: string]: PageData
-}
 export interface PagesStore {
     current?: string
     history: Array<PageVisit>
@@ -36,7 +33,7 @@ export const pagesReducer = createReducer<PagesStore>({
             title: page.title || oldData?.title,
             favIconUrl: page.favIconUrl || oldData?.favIconUrl,
         }
-        console.log('Page data saved', state)
+        console.log('Page data saved', JSON.stringify(state, null, 2))
     }
 })
 
