@@ -1,4 +1,4 @@
-$myColor: red;
+$myColor: rgb(17, 0, 255);
 
 h1,
 h2,
@@ -7,4 +7,29 @@ h4,
 h5,
 h6 {
   color: $myColor;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 3rem;
+}
+
+.App {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  padding: 0 3rem;
+}
+
+a {
+  color: #61dafb;
+}
+
+li {
+  font-size: 1.5rem;
 }
