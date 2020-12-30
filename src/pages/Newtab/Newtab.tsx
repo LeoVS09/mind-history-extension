@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import './Newtab.scss';
 import { PageDataDictanory } from '../../types'
-import { PageData, PageVisit } from '../../history';
+import { PageVisit } from '../../history';
 import { HistoryLog } from './HistoryLog';
+import { MindGraph } from './MindGraph';
 
 export enum Pages {
-  HISTORY_LOG = 'History Log'
+  HISTORY_LOG = 'History Log',
+  MIND_GRAPH = 'MIND GRAPH',
 }
 
 export interface NewTabProps {
@@ -23,10 +25,14 @@ const Newtab: React.FC<NewTabProps> = ({ pages, history }) => (
 );
 
 const Router: React.FC<NewTabProps> = (props) => {
-  const [page, toPage] = useState(Pages.HISTORY_LOG);
+  const [page, toPage] = useState(Pages.MIND_GRAPH);
 
   if (page === Pages.HISTORY_LOG) {
     return <HistoryLog {...props} />;
+  }
+
+  if (page === Pages.MIND_GRAPH) {
+    return <MindGraph {...props} />;
   }
 
   return (
