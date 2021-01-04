@@ -1,9 +1,9 @@
-import { Core, EdgeDefinition, NodeDefinition } from 'cytoscape'
+import { EdgeDefinition, NodeDefinition } from 'cytoscape'
 import React from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import { PageVisit } from '../../history'
 import { PageDataDictanory } from '../../types'
-import { Graph } from 'graphlib'
+import { setupGraphEngine, setupCyHooks } from './graph'
 export interface MindGraphProps {
     pages: PageDataDictanory
     history: Array<PageVisit>
@@ -53,19 +53,6 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
 
 }
 
-function setupGraphEngine(nodes: Array<NodeDefinition>, edges: Array<EdgeDefinition>): Graph {
-    const g = new Graph()
-
-    for (const node of nodes) {
-        g.setNode(node.data.id!, node.data)
-    }
-
-    for (const edge of edges) {
-        g.setEdge(edge.data.source, edge.data.target, edge.data)
-    }
-
-    return g
-}
 
 function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
     const result: Array<NodeDefinition> = []
@@ -148,41 +135,3 @@ const graphStyles = [{
     }
 },
 ]
-
-const HIDDEN_CHILDREN_NAMESPACE = 'hidden_children'
-
-function setupCyHooks(cy: Core, graph: Graph): void {
-    cy.on('tap', 'node', function () {
-        // @ts-ignore
-        const self = this as cytoscape.NodeCollection & cytoscape.SingularData;
-        toggleChildren(self)
-    })
-
-    const roots = graph.sources()
-    console.log('roots', roots)
-
-    for (const root of roots) {
-        const node = cy.getElementById(root)
-        toggleChildren(node)
-    }
-}
-
-function toggleChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
-    if (nodes.scratch(HIDDEN_CHILDREN_NAMESPACE) == null) {
-        // Save node data and remove
-        hideChildren(nodes)
-        return
-    }
-
-    // Restore the removed nodes from saved data
-    showChildren(nodes)
-}
-
-function hideChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
-    nodes.scratch(HIDDEN_CHILDREN_NAMESPACE, nodes.successors().targets().remove())
-}
-
-function showChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
-    nodes.scratch(HIDDEN_CHILDREN_NAMESPACE).restore();
-    nodes.scratch(HIDDEN_CHILDREN_NAMESPACE, null);
-}
