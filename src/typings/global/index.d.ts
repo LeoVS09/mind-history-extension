@@ -17,3 +17,13 @@ declare module 'react-cytoscapejs' {
         static normalizeElements(definititons: ElementsDefinition): Array<NodeDataDefinition | EdgeDataDefinition>
     }
 }
+
+declare module "graphlib" {
+    export class Graph {
+        setNode(id: string, value?: any)
+        node(id: string): any
+        setEdge(from: string, to: string, value?: any)
+        edges(): Array<{ v: string, w: string }> // v source, w target
+        sources(): Array<string>
+    }
+}

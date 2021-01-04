@@ -3,7 +3,7 @@ import React from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import { PageVisit } from '../../history'
 import { PageDataDictanory } from '../../types'
-
+import { Graph } from 'graphlib'
 export interface MindGraphProps {
     pages: PageDataDictanory
     history: Array<PageVisit>
@@ -30,6 +30,8 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
 
     console.log({ elements })
 
+    const g = setupGraphEngine(nodes, edges)
+
     return (
         <div>
             <h1>Mind Graph</h1>
@@ -44,11 +46,25 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
                     }}
                     style={{ width: `${MAX_WIDTH}px`, height: `${MAX_HEIGHT}px` }}
                     stylesheet={graphStyles}
-                    cy={core => setupCyHooks(core)}
+                    cy={core => setupCyHooks(core, g)}
                 />)}
         </div>
     )
 
+}
+
+function setupGraphEngine(nodes: Array<NodeDefinition>, edges: Array<EdgeDefinition>): Graph {
+    const g = new Graph()
+
+    for (const node of nodes) {
+        g.setNode(node.data.id!, node.data)
+    }
+
+    for (const edge of edges) {
+        g.setEdge(edge.data.source, edge.data.target, edge.data)
+    }
+
+    return g
 }
 
 function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
@@ -135,20 +151,31 @@ const graphStyles = [{
 
 const HIDDEN_CHILDREN_NAMESPACE = 'hidden_children'
 
-function setupCyHooks(cy: Core): void {
+function setupCyHooks(cy: Core, graph: Graph): void {
     cy.on('tap', 'node', function () {
         // @ts-ignore
         const self = this as cytoscape.NodeCollection & cytoscape.SingularData;
-
-        if (self.scratch(HIDDEN_CHILDREN_NAMESPACE) == null) {
-            // Save node data and remove
-            hideChildren(self)
-            return
-        }
-
-        // Restore the removed nodes from saved data
-        showChildren(self)
+        toggleChildren(self)
     })
+
+    const roots = graph.sources()
+    console.log('roots', roots)
+
+    for (const root of roots) {
+        const node = cy.getElementById(root)
+        toggleChildren(node)
+    }
+}
+
+function toggleChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
+    if (nodes.scratch(HIDDEN_CHILDREN_NAMESPACE) == null) {
+        // Save node data and remove
+        hideChildren(nodes)
+        return
+    }
+
+    // Restore the removed nodes from saved data
+    showChildren(nodes)
 }
 
 function hideChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
