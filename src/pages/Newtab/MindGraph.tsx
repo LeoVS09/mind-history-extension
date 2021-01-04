@@ -1,5 +1,5 @@
-import { EdgeDefinition, NodeDefinition } from 'cytoscape'
-import React from 'react'
+import { EdgeDataDefinition, EdgeDefinition, NodeDataDefinition, NodeDefinition } from 'cytoscape'
+import React, { useEffect, useState } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import { PageVisit } from '../../history'
 import { PageDataDictanory } from '../../types'
@@ -23,18 +23,21 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
     })
     nodes = nodes.filter(node => node.data.score !== 0)
 
+    const elements = CytoscapeComponent.normalizeElements({
+        nodes,
+        edges
+    })
+
+    console.log({ elements })
+
     return (
         <div>
             <h1>Mind Graph</h1>
-            <p>Fount items {history.length}</p>
+            <p>Found items {elements.length}</p>
 
-            {history.length && (
+            {elements.length && (
                 <CytoscapeComponent
-                    elements={CytoscapeComponent.normalizeElements({
-                        nodes,
-                        edges
-                    })}
-                    cy={() => console.log("update cy")}
+                    elements={elements}
                     layout={{
                         name: 'cose',
                         randomize: true
@@ -103,10 +106,10 @@ const graphStyles = [{
 }, {
     "selector": "node",
     "style": {
-        "width": "mapData(score, 1, 3, 60, 100)",
-        "height": "mapData(score, 1, 3, 60, 100)",
+        "width": "mapData(score, 1, 3, 30, 60)",
+        "height": "mapData(score, 1, 3, 30, 60)",
         "label": "data(label)",
-        "font-size": "18px",
+        "font-size": "14px",
         "text-valign": "center",
         "text-halign": "center",
         "background-color": "#777",
@@ -117,10 +120,11 @@ const graphStyles = [{
 }, {
     "selector": "edge",
     "style": {
+        'width': 1,
         "curve-style": "haystack",
-        "haystack-radius": "0.5",
+        "haystack-radius": "0.1",
         "opacity": "0.4",
         "line-color": "blue",
-        "overlay-padding": "3px"
+        "overlay-padding": "1px"
     }
 },]
