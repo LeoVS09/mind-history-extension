@@ -1,5 +1,5 @@
-import { EdgeDataDefinition, EdgeDefinition, NodeDataDefinition, NodeDefinition } from 'cytoscape'
-import React, { useEffect, useState } from 'react'
+import { Core, EdgeDefinition, NodeDefinition } from 'cytoscape'
+import React from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import { PageVisit } from '../../history'
 import { PageDataDictanory } from '../../types'
@@ -44,6 +44,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
                     }}
                     style={{ width: `${MAX_WIDTH}px`, height: `${MAX_HEIGHT}px` }}
                     stylesheet={graphStyles}
+                    cy={core => setupCyHooks(core)}
                 />)}
         </div>
     )
@@ -129,4 +130,32 @@ const graphStyles = [{
         "line-color": "blue",
         "overlay-padding": "5px"
     }
-},]
+},
+]
+
+const HIDDEN_CHILDREN_NAMESPACE = 'hidden_children'
+
+function setupCyHooks(cy: Core): void {
+    cy.on('tap', 'node', function () {
+        // @ts-ignore
+        const self = this as cytoscape.NodeCollection & cytoscape.SingularData;
+
+        if (self.scratch(HIDDEN_CHILDREN_NAMESPACE) == null) {
+            // Save node data and remove
+            hideChildren(self)
+            return
+        }
+
+        // Restore the removed nodes from saved data
+        showChildren(self)
+    })
+}
+
+function hideChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
+    nodes.scratch(HIDDEN_CHILDREN_NAMESPACE, nodes.successors().targets().remove())
+}
+
+function showChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
+    nodes.scratch(HIDDEN_CHILDREN_NAMESPACE).restore();
+    nodes.scratch(HIDDEN_CHILDREN_NAMESPACE, null);
+}
