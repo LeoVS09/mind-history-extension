@@ -1,6 +1,6 @@
-import { getTabGrantedData } from "./types/access";
-import { isLoaded } from "./types/guards";
-import { store, actions } from "./store";
+import { getTabGrantedData } from "./types/access"
+import { isLoaded } from "./types/guards"
+import { store, actions } from "./store"
 
 export function registerOnTabOpenHook() {
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -8,13 +8,13 @@ export function registerOnTabOpenHook() {
             return // TODO: check is possible to get required data before loading complete
         }
         const { url, title, favIconUrl } = getTabGrantedData(tab)
-        console.log(`Tab "${title}" has been loaded.`);
+        console.log(`Tab "${title}" has been loaded.`)
 
         if (!url) {
             console.warn("Tab loaded, but not have url")
-            return;
+            return
         }
-        store.dispatch(actions.savePageData({ url, page: { title, favIconUrl } }));
+        store.dispatch(actions.savePageData({ url, page: { title, favIconUrl } }))
     })
 
     chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
@@ -28,7 +28,7 @@ export function registerOnTabOpenHook() {
                 // }
                 return
             }
-            console.log('onActivated Active page changed to', tab.title, 'with url', tab.url, tab);
+            console.log('onActivated Active page changed to', tab.title, 'with url', tab.url, tab)
 
             if (!tab.url) {
                 console.warn('onActivated Active tab not have url')

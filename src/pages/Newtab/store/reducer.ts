@@ -1,7 +1,7 @@
-import { createReducer } from "@reduxjs/toolkit";
-import { PageData, PageVisit } from "../../../history";
-import { PageDataDictanory } from "../../../types";
-import * as actions from "./actions";
+import { createReducer } from "@reduxjs/toolkit"
+import { PageVisit } from "../../../history"
+import { PageDataDictanory } from "../../../types"
+import * as actions from "./actions"
 
 export interface PagesStore {
     history: Array<PageVisit>
@@ -14,7 +14,7 @@ export const pagesReducer = createReducer<PagesStore>({
 }, {
 
     [actions.setPageDictionary.type]: (state, { payload: pages }: ReturnType<typeof actions.setPageDictionary>) => {
-        state.pages = pages;
+        state.pages = pages
     },
 
     [actions.setHistory.type]: (state, { payload: history }: ReturnType<typeof actions.setHistory>) => {

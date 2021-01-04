@@ -1,6 +1,6 @@
 
 declare module 'react-cytoscapejs' {
-    import React from 'react';
+    import React from 'react'
     import { NodeDataDefinition, EdgeDataDefinition, ElementsDefinition, CssStyleDeclaration, LayoutOptions, Core } from 'cytoscape'
 
     export interface CytoscapeComponentProps {

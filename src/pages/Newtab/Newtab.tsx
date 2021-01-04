@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import './Newtab.scss';
+import React, { useState } from 'react'
+import './Newtab.scss'
 import { PageDataDictanory } from '../../types'
-import { PageVisit } from '../../history';
-import { HistoryLog } from './HistoryLog';
-import { MindGraph } from './MindGraph';
+import { PageVisit } from '../../history'
+import { HistoryLog } from './HistoryLog'
+import { MindGraph } from './MindGraph'
 
 export enum Pages {
   HISTORY_LOG = 'History Log',
@@ -22,17 +22,17 @@ const Newtab: React.FC<NewTabProps> = ({ pages, history }) => (
       history={history}
     />
   </div>
-);
+)
 
 const Router: React.FC<NewTabProps> = (props) => {
-  const [page, toPage] = useState(Pages.MIND_GRAPH);
+  const [page] = useState(Pages.MIND_GRAPH)
 
   if (page === Pages.HISTORY_LOG) {
-    return <HistoryLog {...props} />;
+    return <HistoryLog {...props} />
   }
 
   if (page === Pages.MIND_GRAPH) {
-    return <MindGraph {...props} />;
+    return <MindGraph {...props} />
   }
 
   return (
@@ -40,4 +40,4 @@ const Router: React.FC<NewTabProps> = (props) => {
   )
 }
 
-export default Newtab;
+export default Newtab

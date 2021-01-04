@@ -2,5 +2,19 @@
   "extends": "react-app",
   "globals": {
     "chrome": "readonly"
+  },
+  "rules": {
+    "semi": [
+      "error",
+      "never"
+    ],
+    "keyword-spacing": [
+      "error",
+      {
+        "after": true,
+        "before": true
+      }
+    ],
+    "jsx-a11y/anchor-is-valid": "off"
   }
 }

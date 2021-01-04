@@ -1,5 +1,5 @@
-import { PageData, PageVisit } from "../history";
-import { PageDataDictanory } from "../types";
+import { PageVisit } from "../history"
+import { PageDataDictanory } from "../types"
 
 export enum MessageTypes {
     GET_PAGE_STORE = 'GET_PAGE_STORE'

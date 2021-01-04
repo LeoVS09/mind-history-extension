@@ -1,7 +1,7 @@
-import { createReducer } from "@reduxjs/toolkit";
-import { PageData, PageVisit } from "../../../history";
-import { PageDataDictanory } from "../../../types";
-import * as actions from "./actions";
+import { createReducer } from "@reduxjs/toolkit"
+import { PageVisit } from "../../../history"
+import { PageDataDictanory } from "../../../types"
+import * as actions from "./actions"
 export interface PagesStore {
     current?: string
     history: Array<PageVisit>
@@ -14,7 +14,7 @@ export const pagesReducer = createReducer<PagesStore>({
 }, {
 
     [actions.setCurrentPage.type]: (state, { payload: url }: ReturnType<typeof actions.setCurrentPage>) => {
-        state.current = url;
+        state.current = url
     },
 
     [actions.openPage.type]: (state, { payload: { url, time } }: ReturnType<typeof actions.openPage>) => {
@@ -22,8 +22,8 @@ export const pagesReducer = createReducer<PagesStore>({
             from: state.current,
             to: url,
             time
-        });
-        printHistory(state.history);
+        })
+        printHistory(state.history)
     },
 
     [actions.savePageData.type]: (state, { payload: { url, page } }: ReturnType<typeof actions.savePageData>) => {

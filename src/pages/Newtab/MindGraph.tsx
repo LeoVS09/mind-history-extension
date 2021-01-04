@@ -1,8 +1,8 @@
-import { EdgeDefinition, NodeDefinition } from 'cytoscape';
-import React from 'react';
-import CytoscapeComponent from 'react-cytoscapejs';
-import { PageVisit } from '../../history';
-import { PageDataDictanory } from '../../types';
+import { EdgeDefinition, NodeDefinition } from 'cytoscape'
+import React from 'react'
+import CytoscapeComponent from 'react-cytoscapejs'
+import { PageVisit } from '../../history'
+import { PageDataDictanory } from '../../types'
 
 export interface MindGraphProps {
     pages: PageDataDictanory
@@ -13,48 +13,45 @@ export interface MindGraphProps {
 const MAX_WIDTH = 1440
 const MAX_HEIGHT = 720
 
-export class MindGraph extends React.Component<MindGraphProps> {
+export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
+    let nodes = mapToNodes(pages)
 
-    render() {
-        const { pages, history } = this.props
-        let nodes = mapToNodes(pages)
+    const edges = mapToEdges(history, Object.keys(pages))
 
-        const edges = mapToEdges(history, Object.keys(pages))
+    nodes.forEach(node => {
+        node.data.score = countEdges(node, edges)
+    })
+    nodes = nodes.filter(node => node.data.score !== 0)
 
-        nodes.forEach(node => {
-            node.data.score = countEdges(node, edges)
-        })
-        nodes = nodes.filter(node => node.data.score !== 0)
+    return (
+        <div>
+            <h1>Mind Graph</h1>
+            <p>Fount items {history.length}</p>
 
-        return (
-            <div>
-                <h1>Mind Graph</h1>
-                <p>Fount items {history.length}</p>
+            {history.length && (
+                <CytoscapeComponent
+                    elements={CytoscapeComponent.normalizeElements({
+                        nodes,
+                        edges
+                    })}
+                    cy={() => console.log("update cy")}
+                    layout={{
+                        name: 'cose',
+                        randomize: true
+                    }}
+                    style={{ width: `${MAX_WIDTH}px`, height: `${MAX_HEIGHT}px` }}
+                    stylesheet={graphStyles}
+                />)}
+        </div>
+    )
 
-                {history.length && (
-                    <CytoscapeComponent
-                        elements={CytoscapeComponent.normalizeElements({
-                            nodes,
-                            edges
-                        })}
-                        cy={() => console.log("update cy")}
-                        layout={{
-                            name: 'cose',
-                            randomize: true
-                        }}
-                        style={{ width: `${MAX_WIDTH}px`, height: `${MAX_HEIGHT}px` }}
-                        stylesheet={graphStyles}
-                    />)}
-            </div>
-        )
-    }
 }
 
 function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
-    const result: Array<NodeDefinition> = [];
+    const result: Array<NodeDefinition> = []
 
     for (const url in pages) {
-        const page = pages[url];
+        const page = pages[url]
 
         result.push({
             data: {
@@ -90,12 +87,11 @@ const countEdges = (node: NodeDefinition, edges: Array<EdgeDefinition>): number 
     return count
 }
 
-function getRandomInt(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
+// function getRandomInt(min: number, max: number): number {
+//     min = Math.ceil(min)
+//     max = Math.floor(max)
+//     return Math.floor(Math.random() * (max - min + 1)) + min
+// }
 
 const graphStyles = [{
     "selector": "core",

@@ -1,4 +1,4 @@
-import { PageData } from "./history";
+import { PageData } from "./history"
 
 export interface PageDataDictanory {
     [url: string]: PageData
