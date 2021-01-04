@@ -40,7 +40,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
                     elements={elements}
                     layout={{
                         name: 'cose',
-                        randomize: true
+                        randomize: true,
                     }}
                     style={{ width: `${MAX_WIDTH}px`, height: `${MAX_HEIGHT}px` }}
                     stylesheet={graphStyles}
@@ -60,6 +60,7 @@ function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
             data: {
                 id: url,
                 label: page.title || url,
+                favIconUrl: page.favIconUrl,
             },
             // position: { x: getRandomInt(0, MAX_WIDTH), y: getRandomInt(0, MAX_HEIGHT) }
         })
@@ -110,9 +111,10 @@ const graphStyles = [{
         "height": "mapData(score, 1, 3, 30, 60)",
         "label": "data(label)",
         "font-size": "14px",
-        "text-valign": "center",
+        "text-valign": "bottom",
         "text-halign": "center",
         "background-color": "#777",
+        "background-image": 'data(favIconUrl)',
         "color": "#fff",
         "overlay-padding": "6px",
         "z-index": "10"
@@ -125,6 +127,6 @@ const graphStyles = [{
         "haystack-radius": "0.1",
         "opacity": "0.4",
         "line-color": "blue",
-        "overlay-padding": "1px"
+        "overlay-padding": "5px"
     }
 },]
