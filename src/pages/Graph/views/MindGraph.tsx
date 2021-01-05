@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 import CytoscapeComponent, { CytoscapeHook } from 'react-cytoscapejs'
 import { PageVisit } from '../../../history'
 import { PageDataDictanory } from '../../../types'
-import { setupGraphEngine, setupCyHooks, renderState } from '../graph'
+import { setupCyHooks, renderState } from '../graph'
 import { useHistory } from 'react-router-dom'
+import { AbstractNode, AbstractGraph } from '../../../graph'
 
 export interface MindGraphProps {
     pages: PageDataDictanory
@@ -35,7 +36,9 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
 
     console.log({ elements })
 
-    const g = setupGraphEngine(nodes, edges)
+    const g = new AbstractGraph()
+    g.addNodes(nodes.map(({ data }) => data as AbstractNode))
+    g.addEdges(edges.map(({ data }) => data))
 
     const historyManager = useHistory()
 

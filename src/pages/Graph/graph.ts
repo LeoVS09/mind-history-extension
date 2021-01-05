@@ -1,21 +1,6 @@
-import { NodeDefinition, EdgeDefinition } from "cytoscape"
 import { Graph } from "graphlib"
 import * as H from 'history'
 import qs from "query-string"
-
-export function setupGraphEngine(nodes: Array<NodeDefinition>, edges: Array<EdgeDefinition>): Graph {
-    const g = new Graph()
-
-    for (const node of nodes) {
-        g.setNode(node.data.id!, node.data)
-    }
-
-    for (const edge of edges) {
-        g.setEdge(edge.data.source, edge.data.target, edge.data)
-    }
-
-    return g
-}
 
 const HIDDEN_CHILDREN_NAMESPACE = 'hidden_children'
 
