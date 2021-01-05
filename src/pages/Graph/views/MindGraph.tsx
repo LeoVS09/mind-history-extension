@@ -1,5 +1,5 @@
 import { EdgeDefinition, NodeDefinition } from 'cytoscape'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CytoscapeComponent, { CytoscapeHook } from 'react-cytoscapejs'
 import { PageVisit } from '../../../history'
 import { PageDataDictanory } from '../../../types'
@@ -18,6 +18,19 @@ const MAX_WIDTH = 1440
 const MAX_HEIGHT = 720
 
 export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl }) => {
+    useEffect(() => {
+        if (!nodeUrl) {
+            document.title = 'Mind History Graph'
+            return
+        }
+        const { title } = pages[nodeUrl] || {}
+        if (!title) {
+            return
+        }
+        document.title = `${title} | Mind History Graph`
+
+    }, [pages, nodeUrl])
+
     pages = filterPages(pages)
 
     let nodes = mapToNodes(pages)
