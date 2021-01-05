@@ -1,33 +1,75 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { PageDataDictanory } from '../../types'
 import { PageVisit } from '../../history'
-import { HistoryLog } from './HistoryLog'
-import { MindGraph } from './MindGraph'
+import { HistoryLog } from './views/HistoryLog'
+import { MindGraph } from './views/MindGraph'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  useLocation
+} from "react-router-dom"
 
-export enum Pages {
-  HISTORY_LOG = 'History Log',
-  MIND_GRAPH = 'MIND GRAPH',
+/**
+ * Chrome not allow create page with multiple routes, like /mind-graph/page/:id
+ * We will use guery params instead
+ */
+
+export enum Views {
+  HISTORY_LOG = 'history-log',
+  MIND_GRAPH = 'graph',
 }
 
-export interface NewTabProps {
+export const pagePrefix = '/graph.html'
+
+export const buildViewPath = (view: string) => `${pagePrefix}?view=${view}`
+
+const Navigation: React.FC = () => (
+  <nav>
+    <ul>
+      <li>
+        <Link to={buildViewPath(Views.MIND_GRAPH)}>Graph</Link>
+      </li>
+      <li>
+        <Link to={buildViewPath(Views.HISTORY_LOG)}>Log</Link>
+      </li>
+    </ul>
+  </nav>
+)
+
+export interface RoutesProps {
   pages: PageDataDictanory
   history: Array<PageVisit>
 }
 
-const Routes: React.FC<NewTabProps> = (props) => {
-  const [page] = useState(Pages.MIND_GRAPH)
-
-  if (page === Pages.HISTORY_LOG) {
+const PagesComponent: React.FC<RoutesProps> = (props) => {
+  const { view, node } = usePageParams()
+  if (view === Views.HISTORY_LOG) {
     return <HistoryLog {...props} />
   }
 
-  if (page === Pages.MIND_GRAPH) {
-    return <MindGraph {...props} />
-  }
-
-  return (
-    <h1>Not found</h1>
-  )
+  return <MindGraph {...props} nodeUrl={node} />
 }
+
+function usePageParams(): { view: string | null, node?: string | null } {
+  const query = useQuery()
+  return {
+    view: query.get('view'),
+    node: query.get('node')
+  }
+}
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
+
+const Routes: React.FC<RoutesProps> = (props) => (
+  <Router>
+    <div>
+      {/* <Navigation /> */}
+      <PagesComponent {...props} />
+    </div>
+  </Router>
+)
 
 export default Routes

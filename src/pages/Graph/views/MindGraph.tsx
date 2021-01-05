@@ -1,12 +1,13 @@
 import { EdgeDefinition, NodeDefinition } from 'cytoscape'
 import React from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
-import { PageVisit } from '../../history'
-import { PageDataDictanory } from '../../types'
-import { setupGraphEngine, setupCyHooks } from './graph'
+import { PageVisit } from '../../../history'
+import { PageDataDictanory } from '../../../types'
+import { setupGraphEngine, setupCyHooks } from '../graph'
 export interface MindGraphProps {
     pages: PageDataDictanory
     history: Array<PageVisit>
+    nodeUrl?: string | null
 }
 
 // TODO: calculate width and height on start

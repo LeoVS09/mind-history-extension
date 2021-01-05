@@ -1,6 +1,6 @@
 import React from 'react'
-import { PageDataDictanory } from '../../types'
-import { PageData, PageVisit } from '../../history'
+import { PageDataDictanory } from '../../../types'
+import { PageData, PageVisit } from '../../../history'
 
 export interface HistoryLogProps {
     pages: PageDataDictanory
