@@ -15,6 +15,8 @@ const MAX_WIDTH = 1440
 const MAX_HEIGHT = 720
 
 export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
+    pages = filterPages(pages)
+
     let nodes = mapToNodes(pages)
 
     const edges = mapToEdges(history, Object.keys(pages))
@@ -36,7 +38,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
     return (
         <div>
             <h1>Mind Graph</h1>
-            <p>Found items {elements.length}</p>
+            <p>Found nodes {nodes.length}</p>
 
             {elements.length && (
                 <CytoscapeComponent
@@ -52,6 +54,21 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
         </div>
     )
 
+}
+
+function filterPages(pages: PageDataDictanory) {
+    const allowedPageUrls = Object.keys(pages)
+        .filter(url => !isSpecialPage(url))
+
+    return copyKeys({}, pages, allowedPageUrls)
+}
+
+function copyKeys<T extends { [key: string]: any }>(target: T, source: T, keys: string[]): T {
+    return keys.reduce<T>((target, key) => {
+        // @ts-ignore
+        target[key] = source[key]
+        return target
+    }, target)
 }
 
 
@@ -73,6 +90,8 @@ function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
 
     return result
 }
+
+const isSpecialPage = (url: string): boolean => url.startsWith('chrome:') || url.startsWith('chrome-extension:')
 
 const mapToEdges = (history: Array<PageVisit>, existingUrls: Array<string>): Array<EdgeDefinition> => history
     .filter(visit => !!visit.from)
