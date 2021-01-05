@@ -5,7 +5,6 @@ import { PageVisit } from '../../../history'
 import { PageDataDictanory } from '../../../types'
 import { setupGraphEngine, setupCyHooks, renderState } from '../graph'
 import { useHistory } from 'react-router-dom'
-import { useQuery } from '../router'
 
 export interface MindGraphProps {
     pages: PageDataDictanory
@@ -50,7 +49,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
             return
         }
 
-        setupCyHooks(core, historyManager)
+        setupCyHooks(core, g, historyManager)
         coreSetupComplete()
     }
 
@@ -150,8 +149,8 @@ const graphStyles = [{
 }, {
     "selector": "node",
     "style": {
-        "width": "mapData(score, 1, 3, 30, 60)",
-        "height": "mapData(score, 1, 3, 30, 60)",
+        "width": "mapData(score, 1, 5, 30, 60)",
+        "height": "mapData(score, 1, 5, 30, 60)",
         "label": "data(label)",
         "font-size": "14px",
         "text-valign": "bottom",

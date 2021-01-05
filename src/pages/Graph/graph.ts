@@ -21,6 +21,7 @@ const HIDDEN_CHILDREN_NAMESPACE = 'hidden_children'
 
 export function setupCyHooks(
     cy: cytoscape.Core,
+    graph: Graph,
     historyManager: H.History<H.LocationState>
 ): void {
     console.log('Setup cytoscape hooks...')
@@ -28,7 +29,7 @@ export function setupCyHooks(
     cy.on('tap', 'node', function () {
         // @ts-ignore
         const self = this as cytoscape.NodeCollection & cytoscape.SingularData
-        toggleChildren(self, historyManager)
+        toggleChildren(self, graph, historyManager)
     })
 
     // on right mouse click or two finger tap
@@ -60,11 +61,17 @@ export function renderState(
     }
 }
 
-function toggleChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData, historyManager: H.History<H.LocationState>) {
-    const query = qs.parse(historyManager.location.search)
-    const nodeUrl = encodeURIComponent(nodes.id())
+function toggleChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData, graph: Graph, historyManager: H.History<H.LocationState>) {
+    const roots = graph.sources()
+    const nodeUrl = nodes.id()
+    if (!roots.includes(nodeUrl)) {
+        return
+    }
 
-    if (query.node === nodeUrl) {
+    const query = qs.parse(historyManager.location.search)
+    const encodedUrl = encodeURIComponent(nodeUrl)
+
+    if (query.node === encodedUrl) {
         console.log('Will hide', nodeUrl)
         delete query['node']
         historyManager.push({
@@ -75,7 +82,7 @@ function toggleChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData
 
     console.log('Will switch to', nodeUrl)
 
-    query['node'] = nodeUrl
+    query['node'] = encodedUrl
     historyManager.push({
         search: `?${qs.stringify(query)}`
     })
