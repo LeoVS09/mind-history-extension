@@ -4,13 +4,13 @@ declare module 'react-cytoscapejs' {
     import { NodeDataDefinition, EdgeDataDefinition, ElementsDefinition, CssStyleDeclaration, LayoutOptions, Core } from 'cytoscape'
 
 
-    type cyHook = (core: Core) => void
+    export type CytoscapeHook = (core: Core) => void
     export interface CytoscapeComponentProps {
         elements: Array<NodeDataDefinition | EdgeDataDefinition>
         style?: React.CSSProperties
         stylesheet?: CssStyleDeclaration
         layout?: LayoutOptions
-        cy?: cyHook
+        cy?: CytoscapeHook
     }
 
     export default class CytoscapeComponent extends React.Component<CytoscapeComponentProps> {

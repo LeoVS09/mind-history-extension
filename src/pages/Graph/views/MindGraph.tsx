@@ -1,9 +1,12 @@
 import { EdgeDefinition, NodeDefinition } from 'cytoscape'
-import React from 'react'
-import CytoscapeComponent from 'react-cytoscapejs'
+import React, { useState } from 'react'
+import CytoscapeComponent, { CytoscapeHook } from 'react-cytoscapejs'
 import { PageVisit } from '../../../history'
 import { PageDataDictanory } from '../../../types'
-import { setupGraphEngine, setupCyHooks } from '../graph'
+import { setupGraphEngine, setupCyHooks, renderState } from '../graph'
+import { useHistory } from 'react-router-dom'
+import { useQuery } from '../router'
+
 export interface MindGraphProps {
     pages: PageDataDictanory
     history: Array<PageVisit>
@@ -14,7 +17,7 @@ export interface MindGraphProps {
 const MAX_WIDTH = 1440
 const MAX_HEIGHT = 720
 
-export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
+export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl }) => {
     pages = filterPages(pages)
 
     let nodes = mapToNodes(pages)
@@ -35,6 +38,22 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
 
     const g = setupGraphEngine(nodes, edges)
 
+    const historyManager = useHistory()
+
+    const [isCoreSetupComplete, setCoreSetupStatus] = useState(false)
+    const coreSetupComplete = () => setCoreSetupStatus(true)
+
+    // prevent multiple setups on updates
+    const coreHookCallback: CytoscapeHook = core => {
+        renderState(core, g, nodeUrl)
+        if (isCoreSetupComplete) {
+            return
+        }
+
+        setupCyHooks(core, historyManager)
+        coreSetupComplete()
+    }
+
     return (
         <div>
             <h1>Mind Graph</h1>
@@ -49,7 +68,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history }) => {
                     }}
                     style={{ width: `${MAX_WIDTH}px`, height: `${MAX_HEIGHT}px` }}
                     stylesheet={graphStyles}
-                    cy={core => setupCyHooks(core, g)}
+                    cy={coreHookCallback}
                 />)}
         </div>
     )
@@ -150,7 +169,7 @@ const graphStyles = [{
         "curve-style": "haystack",
         "haystack-radius": "0.1",
         "opacity": "0.4",
-        "line-color": "blue",
+        "line-color": "red",
         "overlay-padding": "5px"
     }
 },

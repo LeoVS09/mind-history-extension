@@ -5,10 +5,9 @@ import { HistoryLog } from './views/HistoryLog'
 import { MindGraph } from './views/MindGraph'
 import {
   BrowserRouter as Router,
-  Route,
   Link,
-  useLocation
 } from "react-router-dom"
+import { useQuery } from './router'
 
 /**
  * Chrome not allow create page with multiple routes, like /mind-graph/page/:id
@@ -43,25 +42,17 @@ export interface RoutesProps {
 }
 
 const PagesComponent: React.FC<RoutesProps> = (props) => {
-  const { view, node } = usePageParams()
+  const { view, node } = useQuery()
   if (view === Views.HISTORY_LOG) {
     return <HistoryLog {...props} />
   }
 
-  return <MindGraph {...props} nodeUrl={node} />
+  const nodeUrl = node && decodeURIComponent(node as string)
+
+  return <MindGraph {...props} nodeUrl={nodeUrl} />
 }
 
-function usePageParams(): { view: string | null, node?: string | null } {
-  const query = useQuery()
-  return {
-    view: query.get('view'),
-    node: query.get('node')
-  }
-}
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search)
-}
 
 const Routes: React.FC<RoutesProps> = (props) => (
   <Router>
