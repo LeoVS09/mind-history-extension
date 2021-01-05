@@ -14,6 +14,7 @@ export const registerDataBasListener = () => {
         port.postMessage(currentStateMessage())
 
         store.subscribe(() => {
+            console.log('Send new state')
             port.postMessage(currentStateMessage())
         })
     })
