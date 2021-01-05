@@ -29,6 +29,7 @@ export function setupCyHooks(cy: cytoscape.Core, graph: Graph): void {
     cy.on('cxttap', 'node', function () {
         // @ts-ignore
         const self = this as cytoscape.NodeCollection & cytoscape.SingularData
+        console.log('cxttap', self)
         openPage(self)
     })
 
