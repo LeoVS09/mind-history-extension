@@ -6,12 +6,6 @@ export const connectToDataBus = () => {
         name: "New Tab"
     })
 
-    const msg: DataBusMessage = {
-        type: MessageTypes.GET_PAGE_STORE,
-        payload: undefined
-    }
-
-    port.postMessage(msg)
     port.onMessage.addListener((msg: DataBusMessage) => {
         console.log("message recieved" + msg)
         if (msg.type === MessageTypes.GET_PAGE_STORE) {
