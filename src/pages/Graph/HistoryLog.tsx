@@ -1,5 +1,4 @@
 import React from 'react'
-import './Newtab.scss'
 import { PageDataDictanory } from '../../types'
 import { PageData, PageVisit } from '../../history'
 

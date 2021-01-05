@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './Newtab.scss'
 import { PageDataDictanory } from '../../types'
 import { PageVisit } from '../../history'
 import { HistoryLog } from './HistoryLog'
@@ -15,16 +14,7 @@ export interface NewTabProps {
   history: Array<PageVisit>
 }
 
-const Newtab: React.FC<NewTabProps> = ({ pages, history }) => (
-  <div className="App">
-    <Router
-      pages={pages}
-      history={history}
-    />
-  </div>
-)
-
-const Router: React.FC<NewTabProps> = (props) => {
+const Routes: React.FC<NewTabProps> = (props) => {
   const [page] = useState(Pages.MIND_GRAPH)
 
   if (page === Pages.HISTORY_LOG) {
@@ -40,4 +30,4 @@ const Router: React.FC<NewTabProps> = (props) => {
   )
 }
 
-export default Newtab
+export default Routes
