@@ -51,16 +51,39 @@ const baseState: PagesState = {
     ]
 }
 
+interface PageDataItem {
+    url: string,
+    lastAccessTime?: number
+    isClosed?: boolean
+}
+
+function toArray(pages: PageDataDictanory): Array<PageDataItem> {
+    return Object.keys(pages)
+        .map(url => ({
+            url,
+            lastAccessTime: baseState.pages[url].lastAccessTime,
+            isClosed: baseState.pages[url].isClosed,
+        }))
+}
+
+function toDictionary(list: Array<PageDataItem>): PageDataDictanory {
+    return list.reduce((dict, page) => ({
+        ...dict,
+        [page.url]: {
+            lastAccessTime: page.lastAccessTime,
+            isClosed: page.isClosed,
+        }
+    }), {})
+}
+
 describe('getOldTrees', () => {
     it('should return only old trees', () => {
-        // Increase time and add /old in url of base tree
-        const oldPages: PageDataDictanory = Object.keys(baseState.pages)
-            .map(url => ({ url, lastAccessTime: baseState.pages[url].lastAccessTime }))
-            .map(page => ({ url: `${page.url}/old`, lastAccessTime: addHours(page.lastAccessTime, -3) }))
-            .reduce((dict, page) => ({
-                ...dict,
-                [page.url]: { lastAccessTime: page.lastAccessTime }
-            }), {})
+
+        const oldPagesList = toArray(baseState.pages)
+            // Increase time and add /old in url of base tree
+            .map(page => ({ ...page, url: `${page.url}/old`, lastAccessTime: addHours(page.lastAccessTime, -3) }))
+
+        const oldPages: PageDataDictanory = toDictionary(oldPagesList)
 
         const oldPagesHistory = baseState.history.map(visit => ({
             from: `${visit.from}/old`, to: `${visit.to}/old`,
@@ -92,7 +115,90 @@ describe('getOldTrees', () => {
         const oldUrls = Object.keys(oldPages)
         const [rootUrl] = oldUrls
         expect(oldNodes).toEqual({
-            [rootUrl]: oldUrls.map(id => ({ id, lastAccessTime: oldPages[id].lastAccessTime }))
+            [rootUrl]: oldPagesList.map(page => ({ ...page, id: page.url, url: undefined }))
         })
+    })
+
+    it('should return only old trees even if root is closed', () => {
+        // Increase time and add /old in url of base tree
+        const oldPagesList = toArray(baseState.pages)
+            .map(page => ({ ...page, url: `${page.url}/old`, lastAccessTime: addHours(page.lastAccessTime, -3) }))
+        // close root page
+        oldPagesList[0].isClosed = true
+        const oldPages: PageDataDictanory = toDictionary(oldPagesList)
+
+        const oldPagesHistory = baseState.history.map(visit => ({
+            from: `${visit.from}/old`, to: `${visit.to}/old`,
+            time: addHours(visit.time, -3)
+        }))
+
+        // www.google.com/search/nothing
+        const OneOldPage: PageData = {
+            lastAccessTime: addHours(now, -4)
+        }
+
+        const state: PagesState = {
+            settings: {
+                ...baseState.settings,
+            },
+            pages: {
+                ...baseState.pages,
+                ...oldPages,
+                'www.google.com/search/nothing': OneOldPage
+            },
+            history: [
+                ...baseState.history,
+                ...oldPagesHistory
+            ]
+        }
+
+        const oldNodes = getOldTrees(state, { currentTime: now })
+
+        const oldUrls = Object.keys(oldPages)
+        const [rootUrl] = oldUrls
+        expect(oldNodes).toEqual({
+            [rootUrl]: oldPagesList.map(page => ({ ...page, id: page.url, url: undefined }))
+        })
+    })
+
+    it('should not return closed tree', () => {
+        // Increase time and add /old in url of base tree, and close
+        const oldPages: PageDataDictanory = toDictionary(toArray(baseState.pages)
+            .map(page => ({
+                ...page,
+                url: `${page.url}/old`,
+                lastAccessTime: addHours(page.lastAccessTime, -3),
+                isClosed: true
+            }))
+        )
+
+        const oldPagesHistory = baseState.history.map(visit => ({
+            from: `${visit.from}/old`, to: `${visit.to}/old`,
+            time: addHours(visit.time, -3)
+        }))
+
+        // www.google.com/search/nothing
+        const OneOldPage: PageData = {
+            lastAccessTime: addHours(now, -4)
+        }
+
+        const state: PagesState = {
+            settings: {
+                ...baseState.settings,
+            },
+            pages: {
+                ...baseState.pages,
+                ...oldPages,
+                'www.google.com/search/nothing': OneOldPage
+            },
+            history: [
+                ...baseState.history,
+                ...oldPagesHistory
+            ]
+        }
+
+        const oldNodes = getOldTrees(state, { currentTime: now })
+
+        expect(oldNodes).toEqual({})
     })
 })
