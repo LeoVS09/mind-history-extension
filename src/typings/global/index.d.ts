@@ -21,10 +21,12 @@ declare module 'react-cytoscapejs' {
 declare module "graphlib" {
     export class Graph {
         setNode(id: string, value?: any)
-        node(id: string): any
+        node<T = any>(id: string): T | undefined
         setEdge(from: string, to: string, value?: any)
         edges(): Array<{ v: string, w: string }> // v source, w target
         sources(): Array<string>
+        children(id: string): Array<string> | undefined
+        nodeEdges(id: string): Array<any> | undefined
     }
 }
 

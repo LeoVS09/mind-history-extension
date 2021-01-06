@@ -2,6 +2,8 @@
 export interface PageData {
     title?: string;
     favIconUrl?: string;
+    lastAccessTime?: number
+    isClosed?: boolean
 }
 
 export interface PageVisit {
@@ -9,3 +11,5 @@ export interface PageVisit {
     to: string
     time: number;
 }
+
+export * from './filter'

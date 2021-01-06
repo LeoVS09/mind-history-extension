@@ -14,27 +14,29 @@ export function registerOnVisitPageHook() {
             return
         }
 
-        chrome.history.getVisits({ url: event.url }, results => {
-            const visit = results[results.length - 1]
-            const time = visit.visitTime && new Date(visit.visitTime)
+        getPageVisists({ url: event.url })
+            .then(results => {
+                const visit = results[results.length - 1]
+                const time = visit.visitTime
 
-            console.log('getVisits', event.url, 'at', time, 'on type', visit.transition)
+                console.log('getVisits', event.url, 'at', time, 'on type', visit.transition)
+                store.dispatch(actions.savePageData({ url: event.url!, page: { lastAccessTime: time } }))
 
-            // if (isOnFormSubmit(visit)) {
-            //     console.log('User opened page', event.url, ' from form submit at', time)
-            //     return
-            // }
+                // if (isOnFormSubmit(visit)) {
+                //     console.log('User opened page', event.url, ' from form submit at', time)
+                //     return
+                // }
 
-            // if (isByLink(visit)) {
-            //     console.log('User opened page', event.url, ' by link at', time)
-            //     return
-            // }
+                // if (isByLink(visit)) {
+                //     console.log('User opened page', event.url, ' by link at', time)
+                //     return
+                // }
 
-            // if (isFromSearchBar(visit)) {
-            //     console.log('User opened page', event.url, ' from search bar at', time)
-            //     return
-            // }
-        })
+                // if (isFromSearchBar(visit)) {
+                //     console.log('User opened page', event.url, ' from search bar at', time)
+                //     return
+                // }
+            })
 
         // On visited called allways, on new page loads
         // instead of onActivated, which not called when we load new page on same tab
@@ -67,3 +69,7 @@ export function registerOnVisitPageHook() {
     console.log('chrome.history.onVisited hook registered')
 }
 
+export const getPageVisists = (details: chrome.history.Url): Promise<chrome.history.VisitItem[]> =>
+    new Promise((resolve) =>
+        chrome.history.getVisits(details, resolve)
+    )

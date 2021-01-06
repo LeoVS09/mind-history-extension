@@ -1,12 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { pagesReducer } from './reducer'
+import { initialState, pagesReducer } from './reducer'
 import * as persistence from './persistence'
 
-export * as actions from './actions'
+import * as actions from './actions'
+
+export {
+    actions
+}
 
 export const store = configureStore({
     reducer: pagesReducer,
-    preloadedState: persistence.retrive()
+    preloadedState: { ...initialState, ...persistence.retrive() }
 })
 
 store.subscribe(() => {

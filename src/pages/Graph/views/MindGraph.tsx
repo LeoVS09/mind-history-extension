@@ -6,6 +6,7 @@ import { PageDataDictanory } from '../../../types'
 import { setupCyHooks, renderState } from '../graph'
 import { useHistory } from 'react-router-dom'
 import { AbstractNode, AbstractGraph } from '../../../graph'
+import { isTrackablePage } from '../../../history/filter'
 
 export interface MindGraphProps {
     pages: PageDataDictanory
@@ -92,7 +93,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
 
 function filterPages(pages: PageDataDictanory) {
     const allowedPageUrls = Object.keys(pages)
-        .filter(url => !isSpecialPage(url))
+        .filter(url => isTrackablePage(url))
 
     return copyKeys({}, pages, allowedPageUrls)
 }
@@ -125,7 +126,6 @@ function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
     return result
 }
 
-const isSpecialPage = (url: string): boolean => url.startsWith('chrome:') || url.startsWith('chrome-extension:')
 
 const mapToEdges = (history: Array<PageVisit>, existingUrls: Array<string>): Array<EdgeDefinition> => history
     .filter(visit => !!visit.from)
