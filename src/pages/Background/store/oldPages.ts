@@ -1,7 +1,7 @@
-import { AbstractEdge, AbstractGraph, AbstractNode } from "../../../graph"
+import { AbstractEdge, AbstractTreesGraph, AbstractNode } from "../../../graph"
 import { PageData, PageVisit } from "../../../history"
 import { PageDataDictanory } from "../../../types"
-import { PagesStore } from "./reducer"
+import { PagesState } from "./state"
 
 export interface PageGraphNode extends AbstractNode, PageData {
     /** url */
@@ -13,7 +13,7 @@ export interface PageGraphNode extends AbstractNode, PageData {
 export interface GraphVisitEdge extends AbstractEdge, Pick<PageVisit, 'time'> {
 }
 
-export class PagesGraph extends AbstractGraph<PageGraphNode, GraphVisitEdge> {
+export class PagesGraph extends AbstractTreesGraph<PageGraphNode, GraphVisitEdge> {
 
     addNodesFromDictionary(pages: PageDataDictanory) {
         const nodes = toNodes(pages)
@@ -55,6 +55,11 @@ export interface TreesDictionary {
     [rootUrl: string]: Array<PageGraphNode>
 }
 
+export interface GetOldTreesOptions {
+    /** Need for mock at testing runtime */
+    currentTime?: number
+}
+
 
 // TODO: add tests
 /**
@@ -62,7 +67,12 @@ export interface TreesDictionary {
  * when user start new search (new independent graph)
  * and all pages in old search (independent graph) not was accessed long time
  */
-export function getOldTrees(state: PagesStore): TreesDictionary {
+export function getOldTrees(
+    state: PagesState,
+    {
+        currentTime = (new Date()).getTime()
+    }: GetOldTreesOptions = {}
+): TreesDictionary {
     const { settings: { pageExirationTime } } = state
     const graph = new PagesGraph()
 
@@ -78,15 +88,13 @@ export function getOldTrees(state: PagesStore): TreesDictionary {
             time: graph.getLatestAccessedNodeInTree(id)?.lastAccessTime
         }))
         .filter(({ time }) => !!time)
-        .sort((a, b) => a.time! - b.time!) // will sort ascending
+        .sort((a, b) => b.time! - a.time!) // will sort descending, most new at start
         .slice(1) // remove last access tree
-
-    const now = new Date().getTime()
 
     const oldTrees: TreesDictionary = {}
 
     for (const root of roots) {
-        if (!root.time || (now - root.time) > pageExirationTime) {
+        if (root.time && (currentTime - root.time) > pageExirationTime) {
             // if graph was accessed more then pageExirationTime
             const treeNodes = graph.getTree(root.id)!
             const openPages = treeNodes.filter(({ isClosed }) => !isClosed)

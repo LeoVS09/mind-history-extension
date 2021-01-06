@@ -19,10 +19,19 @@ declare module 'react-cytoscapejs' {
 }
 
 declare module "graphlib" {
+
+    export interface GraphOptions {
+        compound?: boolean
+        multigraph?: boolean
+    }
     export class Graph {
+
+        constructor(props?: GraphOptions)
+
         setNode(id: string, value?: any)
         node<T = any>(id: string): T | undefined
         setEdge(from: string, to: string, value?: any)
+        setParent(child: string, parent: string)
         edges(): Array<{ v: string, w: string }> // v source, w target
         sources(): Array<string>
         children(id: string): Array<string> | undefined

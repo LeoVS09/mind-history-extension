@@ -1,30 +1,12 @@
 import { createReducer } from "@reduxjs/toolkit"
 import { isTrackablePage, PageData, PageVisit } from "../../../history"
 import { toGraphPage } from "../../../routing"
-import { PageDataDictanory } from "../../../types"
-import { closePages, getTab } from "../onOpenTab"
+import { closePages } from "../onOpenTab"
 import * as actions from "./actions"
 import { getOldTrees } from "./oldPages"
-export interface PagesStore {
-    current?: string
-    history: Array<PageVisit>
-    pages: PageDataDictanory
-    // TODO: allow to change settings
-    settings: {
-        /** Define how long old search graph can be not accessable, before it will be closed */
-        pageExirationTime: number
-    }
-}
+import { PagesState, initialState } from "./state"
 
-export const initialState: PagesStore = {
-    history: [],
-    pages: {},
-    settings: {
-        pageExirationTime: 2 * 60 * 60 * 1000 // 2 hours in ms 
-    }
-}
-
-export const pagesReducer = createReducer<PagesStore>(initialState, {
+export const pagesReducer = createReducer<PagesState>(initialState, {
 
     [actions.setCurrentPage.type]: (state, { payload: url }: ReturnType<typeof actions.setCurrentPage>) => {
         state.current = url

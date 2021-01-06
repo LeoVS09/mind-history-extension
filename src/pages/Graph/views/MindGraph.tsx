@@ -5,7 +5,7 @@ import { PageVisit } from '../../../history'
 import { PageDataDictanory } from '../../../types'
 import { setupCyHooks, renderState } from '../graph'
 import { useHistory } from 'react-router-dom'
-import { AbstractNode, AbstractGraph } from '../../../graph'
+import { AbstractNode, AbstractTreesGraph } from '../../../graph'
 import { isTrackablePage } from '../../../history/filter'
 
 export interface MindGraphProps {
@@ -50,7 +50,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
 
     console.log({ elements })
 
-    const g = new AbstractGraph()
+    const g = new AbstractTreesGraph()
     g.addNodes(nodes.map(({ data }) => data as AbstractNode))
     g.addEdges(edges.map(({ data }) => data))
 

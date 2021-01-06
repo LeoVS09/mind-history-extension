@@ -9,7 +9,12 @@ export interface AbstractEdge {
     target: string
 }
 
-export class AbstractGraph<N extends AbstractNode, E extends AbstractEdge> extends Graph {
+/** Graph which can contain multiple independentend trees */
+export class AbstractTreesGraph<N extends AbstractNode, E extends AbstractEdge> extends Graph {
+
+    constructor() {
+        super({ compound: true })
+    }
 
     addNodes(nodes: Array<N>) {
         for (const node of nodes) {
@@ -20,17 +25,35 @@ export class AbstractGraph<N extends AbstractNode, E extends AbstractEdge> exten
     addEdges(edges: Array<E>) {
         for (const edge of edges) {
             this.setEdge(edge.source, edge.target, edge)
+            this.setParent(edge.target, edge.source)
         }
     }
 
     getTree(rootId: string): Array<N> | undefined {
-        const root = this.node(rootId)
+        const root = this.node(rootId) as N
         if (!root) {
             return
         }
-        const children = (this.children(rootId) || [])
+        const children = getWholeTreeChildren(this, rootId)
             .map(id => this.node(id))
 
         return [root, ...children]
     }
+
+}
+
+
+/** 
+ * Base children method returns only direct chidlren,
+ * but this function recursively collect all childrens in whole tree
+ */
+function getWholeTreeChildren(graph: Graph, rootId: string): Array<string> {
+    const children = graph.children(rootId) || []
+
+    const result = []
+    for (const child of children) {
+        result.push(child, ...getWholeTreeChildren(graph, child))
+    }
+
+    return result
 }
