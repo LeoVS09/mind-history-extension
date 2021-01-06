@@ -4,8 +4,14 @@ import { store, actions } from "./store"
 
 export function registerOnTabOpenHook() {
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+        if (changeInfo.url) {
+            store.dispatch(actions.savePageData({
+                url: changeInfo.url,
+                page: { title: changeInfo.title, favIconUrl: changeInfo.favIconUrl }
+            }))
+        }
         if (!isLoaded(changeInfo)) {
-            return // TODO: check is possible to get required data before loading complete
+            return
         }
         const { url, title, favIconUrl } = getTabGrantedData(tab)
         console.log(`Tab "${title}" has been loaded.`)
