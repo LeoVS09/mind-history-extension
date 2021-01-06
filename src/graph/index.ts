@@ -17,25 +17,30 @@ export class AbstractTreesGraph<N extends AbstractNode, E extends AbstractEdge> 
     }
 
     addNodes(nodes: Array<N>) {
-        for (const node of nodes) 
+        for (const node of nodes)
             this.setNode(node.id!, node)
-        
+
     }
 
     addEdges(edges: Array<E>) {
         for (const edge of edges) {
             this.setEdge(edge.source, edge.target, edge)
-            this.setParent(edge.target, edge.source)
+            try {
+                this.setParent(edge.target, edge.source)
+            } catch (e) {
+                console.warn('Error on set parent for edge', edge, '\n', e)
+            }
         }
     }
 
     getTree(rootId: string): Array<N> | undefined {
         const root = this.node(rootId) as N
-        if (!root) 
+        if (!root)
             return
-        
+
         const children = getWholeTreeChildren(this, rootId)
             .map(id => this.node(id))
+            .filter(node => !!node)
 
         return [root, ...children]
     }
@@ -51,9 +56,9 @@ function getWholeTreeChildren(graph: Graph, rootId: string): Array<string> {
     const children = graph.children(rootId) || []
 
     const result = []
-    for (const child of children) 
+    for (const child of children)
         result.push(child, ...getWholeTreeChildren(graph, child))
-    
+
 
     return result
 }

@@ -14,9 +14,9 @@ export function registerOnTabOpenHook() {
                 page: { title: changeInfo.title, favIconUrl: changeInfo.favIconUrl }
             }))
         }
-        if (!isLoaded(changeInfo)) 
+        if (!isLoaded(changeInfo))
             return
-        
+
         const { url, title, favIconUrl } = getTabGrantedData(tab)
         console.log(`Tab "${title}" has been loaded.`)
 
@@ -59,7 +59,7 @@ export function registerOnTabOpenHook() {
 
 export const getTab = (queryInfo: chrome.tabs.QueryInfo) =>
     new Promise<Array<chrome.tabs.Tab>>(resolve =>
-        chrome.tabs.query(queryInfo, resolve)
+        chrome.tabs.query(queryInfo, tabs => resolve(tabs || []))
     )
 
 export const closePages = async (urls: Array<string>) => {

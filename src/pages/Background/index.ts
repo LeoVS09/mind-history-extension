@@ -5,6 +5,7 @@ import { registerOnVisitPageHook } from './onVisitPage'
 import { registerOnWillOpenPageHook } from './willOpenPage'
 import { registerDataBasListener } from './data-bus'
 import { updatePagesVisits } from './loadVisits'
+import { updateClosedPages } from './loadClosed'
 
 console.log('Background script started...')
 
@@ -13,6 +14,8 @@ function main() {
     registerOnVisitPageHook()
     registerOnWillOpenPageHook()
     registerDataBasListener()
+
+    updateClosedPages()
     updatePagesVisits()
 }
 
