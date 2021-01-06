@@ -12,9 +12,9 @@ export function save(state: Object) {
 export function retrive<T extends Object>(): T | undefined {
     try {
         const item = localStorage.getItem(LOCAL_STORAGE_KEY)
-        if (!item) {
+        if (!item) 
             return
-        }
+        
 
         return JSON.parse(item)
     } catch (err) {

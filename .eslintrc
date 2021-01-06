@@ -15,6 +15,14 @@
         "before": true
       }
     ],
-    "jsx-a11y/anchor-is-valid": "off"
+    "jsx-a11y/anchor-is-valid": "off",
+    "curly": [
+      "error",
+      "multi-or-nest"
+    ],
+    "nonblock-statement-body-position": [
+      "error",
+      "below"
+    ]
   }
 }

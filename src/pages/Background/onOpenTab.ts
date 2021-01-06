@@ -14,9 +14,9 @@ export function registerOnTabOpenHook() {
                 page: { title: changeInfo.title, favIconUrl: changeInfo.favIconUrl }
             }))
         }
-        if (!isLoaded(changeInfo)) {
+        if (!isLoaded(changeInfo)) 
             return
-        }
+        
         const { url, title, favIconUrl } = getTabGrantedData(tab)
         console.log(`Tab "${title}" has been loaded.`)
 

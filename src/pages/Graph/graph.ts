@@ -49,9 +49,9 @@ export function renderState(
 function toggleChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData, graph: Graph, historyManager: H.History<H.LocationState>) {
     const roots = graph.sources()
     const nodeUrl = nodes.id()
-    if (!roots.includes(nodeUrl)) {
+    if (!roots.includes(nodeUrl)) 
         return
-    }
+    
 
     const query = qs.parse(historyManager.location.search)
     const encodedUrl = encodeURIComponent(nodeUrl)
@@ -88,9 +88,9 @@ function hideChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) 
 function showChildren(nodes: cytoscape.NodeCollection & cytoscape.SingularData) {
     const children = nodes.scratch(HIDDEN_CHILDREN_NAMESPACE)
     console.log('Will show children', children)
-    if (children) {
+    if (children) 
         children.restore()
-    }
+    
     nodes.scratch(HIDDEN_CHILDREN_NAMESPACE, null)
 }
 

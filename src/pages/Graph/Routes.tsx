@@ -23,6 +23,7 @@ export const pagePrefix = '/graph.html'
 
 export const buildViewPath = (view: string) => `${pagePrefix}?view=${view}`
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Navigation: React.FC = () => (
   <nav>
     <ul>
@@ -43,9 +44,9 @@ export interface RoutesProps {
 
 const PagesComponent: React.FC<RoutesProps> = (props) => {
   const { view, node } = useQuery()
-  if (view === Views.HISTORY_LOG) {
+  if (view === Views.HISTORY_LOG)
     return <HistoryLog {...props} />
-  }
+
 
   const nodeUrl = node && decodeURIComponent(node as string)
 

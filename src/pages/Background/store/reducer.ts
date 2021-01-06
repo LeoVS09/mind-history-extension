@@ -18,21 +18,21 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
             to: url,
             time
         }
-        if (!isTrackablePage(pageVisit.to)) {
+        if (!isTrackablePage(pageVisit.to)) 
             return
-        }
-        if (pageVisit.from && !isTrackablePage(pageVisit.from)) {
+        
+        if (pageVisit.from && !isTrackablePage(pageVisit.from)) 
             return
-        }
+        
 
         state.history.push(pageVisit)
         printHistory(state.history)
     },
 
     [actions.savePageData.type]: (state, { payload: { url, page } }: ReturnType<typeof actions.savePageData>) => {
-        if (!isTrackablePage(url)) {
+        if (!isTrackablePage(url)) 
             return
-        }
+        
         // Need prevent overriding fields with data, by undefined values
         const oldData: PageData = state.pages[url] || {}
 
@@ -106,26 +106,26 @@ async function replaceTabsWithGraph(rootUrl: string, nodes: Array<string>) {
 }
 
 function getLastOrExistedTime(a: number | undefined, b: number | undefined): number | undefined {
-    if (a && b) {
+    if (a && b) 
         return getLastTime(a, b)
-    }
+    
 
     return a || b
 }
 
 function getLastTime(a: number, b: number): number {
-    if (a > b) {
+    if (a > b) 
         return a
-    }
+    
 
     return b
 }
 
 const printHistory = (history: Array<PageVisit>) => {
     const result = []
-    for (const visit of history) {
+    for (const visit of history) 
         result.push(`${visit.from} -> ${visit.to} | ${new Date(visit.time)}`)
-    }
+    
 
     console.log(result.join('\n\n '))
 }

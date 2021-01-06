@@ -4,9 +4,9 @@ import { store, actions } from "./store"
 import { getCurrentTab } from "./browser/tabs"
 
 export function registerOnWillOpenPageHook() {
-    if (!chrome.webNavigation) {
+    if (!chrome.webNavigation) 
         throw new NotHavePermissionError('webNavigation', 'see user page transtions')
-    }
+    
 
     chrome.webNavigation.onBeforeNavigate.addListener(async event => {
         console.log('onBeforeNavigate to ' + event.url, 'in tab', event.tabId, 'at', new Date(event.timeStamp))

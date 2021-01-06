@@ -32,19 +32,19 @@ export class PagesGraph extends AbstractTreesGraph<PageGraphNode, GraphVisitEdge
      * */
     getLatestAccessedNodeInTree(rootid: string): PageGraphNode | undefined {
         const nodes = this.getTree(rootid)
-        if (!nodes || nodes.length === 0) {
+        if (!nodes || nodes.length === 0) 
             return
-        }
+        
 
         let latest: PageGraphNode = nodes[0]
         for (const node of nodes) {
-            if (!node.lastAccessTime) {
+            if (!node.lastAccessTime) 
                 return
-            }
+            
 
-            if (latest.lastAccessTime! < node.lastAccessTime) {
+            if (latest.lastAccessTime! < node.lastAccessTime) 
                 latest = node
-            }
+            
         }
 
         return latest
@@ -98,9 +98,9 @@ export function getOldTrees(
             // if graph was accessed more then pageExirationTime
             const treeNodes = graph.getTree(root.id)!
             const openPages = treeNodes.filter(({ isClosed }) => !isClosed)
-            if (!openPages.length) {
+            if (!openPages.length) 
                 continue
-            }
+            
             if (openPages[0] !== treeNodes[0]) {
                 // add root node even if it not exists
                 openPages.unshift(treeNodes[0])

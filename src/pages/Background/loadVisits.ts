@@ -11,9 +11,8 @@ export async function updatePagesVisits() {
     for (const pageUrl of urls) {
         await timeout(50) // debounce visit requests, for decrease load on process
         const visits = await getPageVisists({ url: pageUrl })
-        if (visits.length === 0) {
+        if (visits.length === 0)
             continue
-        }
 
         const lastVisit = visits[visits.length - 1]
         if (lastVisit.visitTime)

@@ -25,9 +25,9 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
             return
         }
         const { title } = pages[nodeUrl] || {}
-        if (!title) {
+        if (!title)
             return
-        }
+
         document.title = `${title} | Mind History Graph`
 
     }, [pages, nodeUrl])
@@ -62,9 +62,9 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
     // prevent multiple setups on updates
     const coreHookCallback: CytoscapeHook = core => {
         renderState(core, g, nodeUrl)
-        if (isCoreSetupComplete) {
+        if (isCoreSetupComplete)
             return
-        }
+
 
         setupCyHooks(core, g, historyManager)
         coreSetupComplete()
@@ -141,9 +141,9 @@ const mapToEdges = (history: Array<PageVisit>, existingUrls: Array<string>): Arr
 const countEdges = (node: NodeDefinition, edges: Array<EdgeDefinition>): number => {
     let count = 0
     for (const edge of edges) {
-        if (edge.data.source === node.data.id || edge.data.target === node.data.id) {
+        if (edge.data.source === node.data.id || edge.data.target === node.data.id)
             count++
-        }
+
     }
 
     return count
