@@ -8,9 +8,9 @@ FROM base as second
 
 WORKDIR /work
 
-COPY package*.json /work/
+COPY package*.json yarn.lock /work/
 
-RUN npm i
+RUN yarn
 
 FROM second
 
