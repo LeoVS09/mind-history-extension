@@ -29,9 +29,9 @@ var fileExtensions = [
   'woff2',
 ]
 
-if (fileSystem.existsSync(secretsPath)) {
+if (fileSystem.existsSync(secretsPath))
   alias['secrets'] = secretsPath
-}
+
 
 var options = {
   mode: process.env.NODE_ENV || 'development',
@@ -40,10 +40,6 @@ var options = {
     options: path.join(__dirname, 'src', 'pages', 'Options', 'index.tsx'),
     popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.tsx'),
     background: path.join(__dirname, 'src', 'pages', 'Background', 'index.ts'),
-    contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
-  },
-  chromeExtensionBoilerplate: {
-    notHotReload: ['contentScript'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -133,15 +129,6 @@ var options = {
         },
       ],
     }),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: 'src/pages/Content/content.styles.css',
-          to: path.join(__dirname, 'dist'),
-          force: true,
-        },
-      ],
-    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'pages', 'Graph', 'index.html'),
       filename: 'graph.html',
@@ -178,9 +165,9 @@ var options = {
   },
 }
 
-if (env.NODE_ENV === 'development') {
+if (env.NODE_ENV === 'development')
   options.devtool = 'eval-cheap-module-source-map'
-} else {
+else {
   options.optimization = {
     minimize: true,
     minimizer: [
