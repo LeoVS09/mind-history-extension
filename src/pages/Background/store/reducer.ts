@@ -61,6 +61,9 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
     },
 
     [actions.tryCloseOldPages.type]: (state) => {
+        if (!state.settings.isClosePagesAutomatically)
+            return
+
         const old = getOldTrees(state)
         console.log('old pages:', old)
 
@@ -89,7 +92,10 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
         const urls = Object.keys(pages)
         for (const url of urls)
             pages[url].isClosed = !tabs.includes(url)
+    },
 
+    [actions.setSettings.type]: (state, { payload: settings }: ReturnType<typeof actions.setSettings>) => {
+        state.settings = settings
     }
 })
 

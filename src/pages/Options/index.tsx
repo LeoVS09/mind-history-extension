@@ -1,10 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { Provider } from 'react-redux'
 
-import Options from './Options'
-import './index.css'
+import App from './App'
+import './data-bus'
+import './index.scss'
+import { store } from './store'
 
 render(
-  <Options title={'settings'} />,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   window.document.querySelector('#app-container')
 )

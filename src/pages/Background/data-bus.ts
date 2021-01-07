@@ -1,8 +1,8 @@
-import { DataBusMessage, MessageTypes } from "../../data-bus"
-import { store } from "./store"
+import { ChangeSettingsPayload, DataBusMessage, MessageTypes } from "../../data-bus"
+import { store, actions } from "./store"
 
 const currentStateMessage = (): DataBusMessage => ({
-    type: MessageTypes.GET_PAGE_STORE,
+    type: MessageTypes.ACTUAL_PAGE_STORE,
     payload: store.getState()
 })
 
@@ -16,6 +16,13 @@ export const registerDataBasListener = () => {
         store.subscribe(() => {
             console.log('Send new state')
             port.postMessage(currentStateMessage())
+        })
+
+        port.onMessage.addListener((message: DataBusMessage) => {
+            if (message.type === MessageTypes.CHANGE_SETTINGS) {
+                const { payload: { settings } } = message as DataBusMessage<ChangeSettingsPayload>
+                store.dispatch(actions.setSettings(settings))
+            }
         })
     })
 }

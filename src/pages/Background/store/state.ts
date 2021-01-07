@@ -1,4 +1,5 @@
 import { PageVisit } from "../../../history"
+import { ExtensionSettings, initialSettings } from "../../../settings"
 import { PageDataDictanory } from "../../../types"
 
 export interface PagesState {
@@ -6,16 +7,11 @@ export interface PagesState {
     history: Array<PageVisit>
     pages: PageDataDictanory
     // TODO: allow to change settings
-    settings: {
-        /** Define how long old search graph can be not accessable, before it will be closed */
-        pageExirationTime: number
-    }
+    settings: ExtensionSettings
 }
 
 export const initialState: PagesState = {
     history: [],
     pages: {},
-    settings: {
-        pageExirationTime: 2 * 60 * 60 * 1000 // 2 hours in ms 
-    }
+    settings: initialSettings
 }
