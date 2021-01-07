@@ -42,7 +42,9 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
             favIconUrl: page.favIconUrl || oldData.favIconUrl,
             lastAccessTime: getLastOrExistedTime(page.lastAccessTime, oldData.lastAccessTime)
         }
-        console.log('Page data saved', JSON.stringify(state, null, 2))
+        if (process.env.DEBUG)
+            console.debug('Page data saved', JSON.stringify(state, null, 2))
+
     },
 
     [actions.updatePagesVisitsTime.type]: (state, { payload: visitsTime }: ReturnType<typeof actions.updatePagesVisitsTime>): void => {
