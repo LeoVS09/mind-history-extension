@@ -6,9 +6,12 @@ import './Popup.scss'
 const Popup = () => (
   <div className="App">
     <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" onClick={() => toGraphPage()} />
+      <div className="logo-and-header" onClick={() => toGraphPage()}>
+        <img src={logo} className="App-logo" alt="logo" />
+        <h3>Mind History</h3>
+      </div>
+
       <p>
-        Mind History Extension.
         <div className="links">
           <a onClick={() => toGraphPage()}>Graph page</a>
           <a onClick={toOptionsPage}>Options page</a>

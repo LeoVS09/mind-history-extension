@@ -11,14 +11,16 @@
 }
 
 .App-logo {
-  height: 30vmin;
-  cursor: pointer;
+  height: 10vmin;
+  position: relative;
+  top: 5vmin;
+  margin-right: 0.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.logo-and-header {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
 }
 
 .App-header {
@@ -44,13 +46,4 @@
 a {
   color: #61dafb;
   cursor: pointer;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
