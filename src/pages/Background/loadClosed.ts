@@ -5,6 +5,9 @@ import { store, actions } from "./store"
 export async function updateClosedPages() {
     const { pages } = store.getState()
     const urls = Object.keys(pages)
+    if (urls.length === 0)
+        return
+
 
     const tabs = (await getTab({ url: urls }))
         .map(tab => tab.url || tab.pendingUrl)

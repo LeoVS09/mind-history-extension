@@ -5,7 +5,11 @@ import { PagesVisistTimeDictianory } from "./store/actions"
 
 export async function updatePagesVisits() {
     const { pages } = store.getState()
-    console.log('Start load visits for', Object.keys(pages).length, 'pages')
+    const urls = Object.keys(pages)
+    if (urls.length === 0)
+        return
+
+    console.log('Start load visits for', urls.length, 'pages')
 
     const pagesAccessTime = await getAllPageVisists(pages)
 

@@ -4,4 +4,5 @@ export const isTrackablePage = (url: string): boolean =>
     !isSpecialPage(url)
 
 
-const isSpecialPage = (url: string): boolean => url.startsWith('chrome:') || url.startsWith('chrome-extension:')
+const isSpecialPage = (url: string): boolean =>
+    !(url.startsWith('http:') || url.startsWith('https:'))

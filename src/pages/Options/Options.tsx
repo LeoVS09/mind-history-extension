@@ -11,13 +11,14 @@ export interface OptionsProps {
   settings: ExtensionSettings
 }
 
-const ONE_HOUR = 1 * 60 * 60 * 1000 // in ms 
+const ONE_MINUTE = 60 * 1000 // in ms 
+const EXPIRATION_STEPS = ONE_MINUTE
 
 const Options: React.FC<OptionsProps> = ({ settings }) => {
 
   const dispatch = useDispatch()
 
-  let pageExirationTime = settings.pageExirationTime / ONE_HOUR
+  let pageExirationTime = settings.pageExirationTime / EXPIRATION_STEPS
   if (pageExirationTime <= 0)
     pageExirationTime = 1
 
@@ -45,17 +46,17 @@ const Options: React.FC<OptionsProps> = ({ settings }) => {
           />
 
           <TextField
-            label="Page expiration hours"
-            value={settings.pageExirationTime / ONE_HOUR}
+            label="Page expiration minutes"
+            value={settings.pageExirationTime / EXPIRATION_STEPS}
             onChange={event => updateSettings({
-              pageExirationTime: (+event.target.value) * ONE_HOUR
+              pageExirationTime: (+event.target.value) * EXPIRATION_STEPS
             })}
             disabled={!settings.isClosePagesAutomatically}
           />
         </div>
 
         <p className="description">
-          If enabled, when open new tab and old pages group not was active last {pageExirationTime} hour(s) group will be closed
+          If enabled, when open new tab and old pages group not was active last {pageExirationTime} minute(s) group will be closed
         </p>
       </div>
     </div>
