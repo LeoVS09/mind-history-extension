@@ -10,7 +10,7 @@ WORKDIR /work
 
 COPY package*.json yarn.lock /work/
 
-RUN yarn
+RUN yarn --frozen-lockfile
 
 FROM second
 

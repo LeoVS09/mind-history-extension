@@ -10,7 +10,8 @@
   "scripts": {
     "build": "node build/production.js",
     "start": "node build/dev-server.js",
-    "lint": "eslint --fix src/**/*.{ts,tsx}",
+    "lint": "yarn lintonly --fix",
+    "lintonly": "eslint src/**/*.{ts,tsx}",
     "test": "jest"
   },
   "dependencies": {
