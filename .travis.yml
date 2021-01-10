@@ -23,7 +23,7 @@ jobs:
       script: npm run build
       skip_cleanup: true
     
-    - stage: release & deploy
+    - stage: Release & Deploy
       script:
         - echo "Not yet done"
-      if: branch = master
+      if: branch = main
