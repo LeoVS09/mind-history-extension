@@ -22,8 +22,8 @@ which mean I only trying understand is it possible to receive all requirement da
 ### First start guide
 
 1. Run `make` for setup Docker enviroment.
-2. Run `npm install` to install the dependencies.
-3. Run `npm start`
+2. Run `yarn` to install the dependencies.
+3. Run `yarn start`
 4. Load your extension on Chrome following:
    1. Access `chrome://extensions/`
    2. Check `Developer mode`
@@ -65,6 +65,15 @@ and on your `src/manifest.json`:
     }
   ]
 }
+```
+
+### Commits
+
+Project using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
+If you not know how to commit run
+
+```bash
+yarn commit
 ```
 
 ## Production build
