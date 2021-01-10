@@ -28,5 +28,5 @@ jobs:
       deploy: 
         provider: script
         skip_cleanup: true
-        skript: echo "not ready yet" 
+        script: yarn semantic-release
       if: branch = main
