@@ -24,6 +24,9 @@ jobs:
       skip_cleanup: true
     
     - stage: Release & Deploy
-      script:
-        - echo "Not yet done"
+      script: skip
+      deploy: 
+        provider: script
+        skip_cleanup: true
+        skript: echo "not ready yet" 
       if: branch = main
