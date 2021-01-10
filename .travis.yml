@@ -1,0 +1,26 @@
+language: node_js
+node_js:
+  - 14
+
+os:
+  - linux
+
+jobs:
+  include:
+    - stage: install
+      script: yarn --frozen-lockfile
+      skip_cleanup: true
+    - stage: lint
+      script: yarn lint
+      skip_cleanup: true
+    - stage: test
+      script: yarn test
+      skip_cleanup: true
+    - stage: Build
+      script:
+      - npm run build
+      skip_cleanup: true
+    - stage: Release & Deploy
+      script:
+      - echo "Not yet done"
+      if: branch = master
