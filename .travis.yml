@@ -29,4 +29,6 @@ jobs:
         provider: script
         skip_cleanup: true
         script: yarn semantic-release
+        on:
+          branch: main
       if: branch = main
