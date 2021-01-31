@@ -1,6 +1,6 @@
 {
   "name": "mind-history-extension",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Browser extension for organise pages",
   "license": "GPL-3.0-or-later",
   "repository": {
@@ -14,7 +14,8 @@
     "lintonly": "eslint src/**/*.{ts,tsx}",
     "test": "jest",
     "commit": "cz",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "upload": "node build/upload.js"
   },
   "dependencies": {
     "@hot-loader/react-dom": "^17.0.0",
@@ -41,6 +42,7 @@
     "@commitlint/prompt": "^11.0.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/exec": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/github": "^7.2.0",
     "@semantic-release/npm": "^7.0.9",
@@ -54,9 +56,12 @@
     "@types/react-router-dom": "^5.1.7",
     "@typescript-eslint/eslint-plugin": "^4.11.1",
     "@typescript-eslint/parser": "^4.11.1",
+    "archiver": "^5.2.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "babel-preset-react-app": "^10.0.0",
+    "chrome-webstore-upload": "^0.4.4",
+    "chrome-webstore-upload-cli": "^1.2.0",
     "clean-webpack-plugin": "^3.0.0",
     "commitizen": "^4.2.2",
     "copy-webpack-plugin": "^6.3.2",
