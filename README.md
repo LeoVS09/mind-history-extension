@@ -1,5 +1,7 @@
 # Mind History Extension
 
+[![Build Status](https://travis-ci.com/LeoVS09/mind-history-extension.svg?branch=main)](https://travis-ci.com/LeoVS09/mind-history-extension)
+
 Browser extension for organise pages.
 
 Main goal of extensions allow easily search and learn new information in WEB.
