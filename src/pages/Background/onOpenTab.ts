@@ -8,13 +8,16 @@ export function registerOnTabOpenHook() {
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         store.dispatch(actions.tryCloseOldPages())
 
+        if (process.env.DEBUG)
+            console.debug("chrome.tabs.onUpdated", tabId, changeInfo, tab)
+
         if (changeInfo.url) {
             store.dispatch(actions.savePageData({
                 url: changeInfo.url,
                 page: { title: changeInfo.title, favIconUrl: changeInfo.favIconUrl }
             }))
         }
-        if (!isLoaded(changeInfo))
+        if (!isLoaded(tab))
             return
 
         const { url, title, favIconUrl } = getTabGrantedData(tab)
@@ -29,6 +32,9 @@ export function registerOnTabOpenHook() {
 
     chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
         chrome.tabs.get(tabId, tab => {
+            if (process.env.DEBUG)
+                console.debug("chrome.tabs.onActivated", tabId, tab)
+
             const url = tab.url || tab.pendingUrl
             console.log('onActivated Active page changed to', tab.title, 'with url', url, tab)
 
