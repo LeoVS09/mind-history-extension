@@ -1,5 +1,5 @@
 import { EdgeDefinition, NodeDefinition } from 'cytoscape'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import CytoscapeComponent, { CytoscapeHook } from 'react-cytoscapejs'
 import { PageVisit } from '../../../history'
 import { PageDataDictanory } from '../../../types'
@@ -7,6 +7,7 @@ import { setupCyHooks, renderState } from '../graph'
 import { useHistory } from 'react-router-dom'
 import { AbstractNode, AbstractTreesGraph } from '../../../graph'
 import { isTrackablePage } from '../../../history/filter'
+import { Helmet } from 'react-helmet'
 
 export interface MindGraphProps {
     pages: PageDataDictanory
@@ -19,19 +20,6 @@ const MAX_WIDTH = 1440
 const MAX_HEIGHT = 720
 
 export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl }) => {
-    useEffect(() => {
-        if (!nodeUrl) {
-            document.title = 'Mind History Graph'
-            return
-        }
-        const { title } = pages[nodeUrl] || {}
-        if (!title)
-            return
-
-        document.title = `${title} | Mind History Graph`
-
-    }, [pages, nodeUrl])
-
     pages = filterPages(pages)
 
     let nodes = mapToNodes(pages)
@@ -72,6 +60,10 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
 
     return (
         <div>
+            <Helmet>
+                <title>{nodeUrl && pages[nodeUrl]?.title ? `${pages[nodeUrl]?.title} | Mind History Graph` : 'Mind History Graph'}</title>
+            </Helmet>
+
             <h1>Mind Graph</h1>
             <p>Found nodes {nodes.length}</p>
 
