@@ -31,10 +31,7 @@ export const MindGraph: React.FC<MindGraphProps> = ({ pages, history, nodeUrl })
     })
     nodes = nodes.filter(node => node.data.score !== 0)
 
-    const elements = CytoscapeComponent.normalizeElements({
-        nodes,
-        edges
-    })
+    const elements = CytoscapeComponent.normalizeElements({ nodes, edges })
 
     console.log({ elements })
 

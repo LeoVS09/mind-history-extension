@@ -22,6 +22,9 @@
   "permissions": [
     "tabs",
     "history",
-    "webNavigation"
+    "webNavigation",
+    "<all_urls>",
+    "webRequest",
+    "webRequestBlocking"
   ]
 }

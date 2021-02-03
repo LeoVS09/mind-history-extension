@@ -40,3 +40,6 @@ docker-console:
 	docker run -it --rm -v ${PWD}:/work -w /work --name mind-history-extension -p 3000:3000 $(DOCKER_IMAGE_TAG) bash
 
 console: docker-console
+
+attach-console:
+	docker exec -it mind-history-extension /bin/bash

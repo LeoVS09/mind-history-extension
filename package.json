@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "node build/production.js",
-    "start": "DEBUG=true node build/dev-server.js",
+    "start": "node build/dev-server.js",
+    "dev": "DEBUG=true npm run start",
     "lint": "yarn lintonly --fix",
     "lintonly": "eslint src/**/*.{ts,tsx}",
     "test": "jest",

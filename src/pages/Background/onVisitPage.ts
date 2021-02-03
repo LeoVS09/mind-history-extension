@@ -1,11 +1,11 @@
-import { getCurrentTab } from "./browser/tabs"
+import { tabs } from "../../browser"
 import { NotHavePermissionError } from "./errors"
 import { store, actions } from "./store"
 
 export function registerOnVisitPageHook() {
-    if (!chrome.history) 
+    if (!chrome.history)
         throw new NotHavePermissionError('history', 'access visited pages urls')
-    
+
 
     chrome.history.onVisited.addListener(async event => {
         console.log('onVisited', event.url)
@@ -41,13 +41,13 @@ export function registerOnVisitPageHook() {
         // On visited called allways, on new page loads
         // instead of onActivated, which not called when we load new page on same tab
         // so need change current tab
-        const tab = await getCurrentTab()
+        const tab = await tabs.getActive()
         if (tab.status === 'loading') {
             console.log('onVisited Active tab is changed to loading page, with url', tab.pendingUrl, tab)
             const url = tab.url || tab.pendingUrl
-            if (url) 
+            if (url)
                 store.dispatch(actions.setCurrentPage(url))
-            
+
             return
         }
         console.log('onVisited Active page changed to', tab.title, 'with url', tab.url, tab)

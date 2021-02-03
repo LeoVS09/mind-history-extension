@@ -1,16 +1,16 @@
 import { NotHavePermissionError } from "./errors"
 import { isByLink } from "./types/guards"
 import { store, actions } from "./store"
-import { getCurrentTab } from "./browser/tabs"
+import { tabs } from "../../browser"
 
 export function registerOnWillOpenPageHook() {
-    if (!chrome.webNavigation) 
+    if (!chrome.webNavigation)
         throw new NotHavePermissionError('webNavigation', 'see user page transtions')
-    
+
 
     chrome.webNavigation.onBeforeNavigate.addListener(async event => {
         console.log('onBeforeNavigate to ' + event.url, 'in tab', event.tabId, 'at', new Date(event.timeStamp))
-        const tab = await getCurrentTab()
+        const tab = await tabs.getActive()
         console.log('Was start opening page', event.url, 'from tab with url', tab.url || tab.pendingUrl, 'and title', tab.title, 'at', new Date(event.timeStamp), tab)
     })
 
