@@ -1,15 +1,16 @@
 import { onResponseListener } from "./onResponse"
+import { ResourcesUrlGetter } from "./types"
 
-export function installUnblockers(tabId: number) {
+export function installUnblockers(tabId: number, getUrls: ResourcesUrlGetter) {
     // TODO: check is uninstall can cause uninstall from other tabs
-    uninstallUnblockers()
+    uninstallUnblockers(getUrls)
 
     const extra = ['blocking', 'responseHeaders']
     if (/Firefox/.test(navigator.userAgent) === false)
         extra.push('extraHeaders')
 
 
-    chrome.webRequest.onHeadersReceived.addListener(onResponseListener, {
+    chrome.webRequest.onHeadersReceived.addListener(onResponseListener.bind(null, getUrls), {
         tabId,
         urls: ['<all_urls>']
     },
@@ -17,6 +18,6 @@ export function installUnblockers(tabId: number) {
     )
 }
 
-export function uninstallUnblockers() {
-    chrome.webRequest.onHeadersReceived.removeListener(onResponseListener)
+export function uninstallUnblockers(getUrls: ResourcesUrlGetter) {
+    chrome.webRequest.onHeadersReceived.removeListener(onResponseListener.bind(null, getUrls))
 }

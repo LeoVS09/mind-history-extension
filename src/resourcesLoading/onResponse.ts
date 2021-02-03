@@ -1,24 +1,34 @@
 // Based on https://github.com/balvin-perrie/Access-Control-Allow-Origin---Unblock/blob/master/src/background.js
 
-const prefs = {
-    'enabled': false,
-    'overwrite-origin': true,
-    'methods': ['GET', 'PUT', 'POST', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH', 'PROPFIND', 'PROPPATCH', 'MKCOL', 'COPY', 'MOVE', 'LOCK'],
-    'remove-x-frame': true,
-    'allow-credentials': true,
-    'allow-headers-value': '*',
-    'allow-origin-value': '*',
-    'expose-headers-value': '*',
-    'allow-headers': true,
-    'unblock-initiator': true
-}
+import { ResourcesUrlGetter } from "./types"
 
-export function onResponseListener(details: chrome.webRequest.WebResponseHeadersDetails) {
+// will be binded, not use context
+export function onResponseListener(getUrls: ResourcesUrlGetter, details: chrome.webRequest.WebResponseHeadersDetails) {
+    const prefs = {
+        'enabled': false,
+        'overwrite-origin': true,
+        'methods': ['GET', 'HEAD'],
+        'remove-x-frame': true,
+        'allow-credentials': true,
+        'allow-headers-value': '*',
+        'allow-origin-value': '*',
+        'expose-headers-value': '*',
+        'allow-headers': true,
+        'unblock-initiator': true
+    }
+
+
     if (details.type === 'main_frame')
         return
 
     const { initiator, url, responseHeaders = [] } = details
     let origin = ''
+
+    const resources = getUrls()
+    if (!resources.includes(url)) {
+        // if resource not in need block, then ignor request
+        return
+    }
 
     if (prefs['unblock-initiator']) {
         try {
