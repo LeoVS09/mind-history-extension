@@ -1,6 +1,7 @@
 import { NodeDefinition, EdgeDefinition } from "cytoscape"
 import { isTrackablePage, PageVisit } from "../../../../../../history"
 import { PageDataDictanory } from "../../../../../../types"
+import { computeLabel } from "./labels"
 
 export function filterPages(pages: PageDataDictanory) {
     const allowedPageUrls = Object.keys(pages)
@@ -27,7 +28,7 @@ export function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
         result.push({
             data: {
                 id: url,
-                label: page.title || url,
+                label: computeLabel({ ...page, url }),
                 favIconUrl: page.favIconUrl,
             },
             // position: { x: getRandomInt(0, MAX_WIDTH), y: getRandomInt(0, MAX_HEIGHT) }
