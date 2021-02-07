@@ -25,3 +25,7 @@ export function raggedToSparse<T, R>(ragged: Array<Array<T>>, value: R): Array<A
     })
 
 }
+
+export function create<T, R>(x: number, y: number, value: R): Array<Array<T | R>> {
+    return new Array(x).fill(0).map(() => new Array(y).fill(value))
+}

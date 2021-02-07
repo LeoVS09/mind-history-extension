@@ -5,7 +5,7 @@ export interface TimeNode {
     timestamp: number | undefined;
 }
 
-export type NodesMap<Node extends AbstractNode = AbstractNode> = Array<Array<Node>>;
+export type NodesMap = Array<Array<string | null>>;
 
 /**
  * Will build nodes positions map
@@ -16,26 +16,38 @@ export type NodesMap<Node extends AbstractNode = AbstractNode> = Array<Array<Nod
 export function buildMapByTime<
     Node extends TimeNode & AbstractNode,
     Edge extends AbstractEdge
->(graph: AbstractTreesGraph<Node, Edge>): NodesMap<Node> {
-    const treesLevels = []
+>(graph: AbstractTreesGraph<Node, Edge>): NodesMap {
+    const byTree = []
 
-    for (const rootId of graph.getAllTreeRoots()) {
-        const levels = graph.getTreeByLevels(rootId)
-        const timeAlignedLevels = alignByTime(levels!)
-        const levelsMatrix = matrix.raggedToSparse(timeAlignedLevels!, null)
+    for (const rootId of graph.getAllTreeRoots())
+        byTree.push(...graph.flatTree(rootId))
 
-        treesLevels.push(levelsMatrix)
-    }
+    const byTime = graph.nodes().sort((a, b) => {
+        const { timestamp: tA } = graph.node(a) || {}
+        const { timestamp: tB } = graph.node(b) || {}
 
-    const treesMatrix = treesLevelsToMatrix(treesLevels)
-    const map = decreaseDimension(decreaseDimension(treesMatrix))
+        if (!a || !b)
+            return 0
+
+        return tA - tB
+    })
+
+    const map = matrix.create<string, null>(byTree.length, byTime.length, null)
+
+    byTree.forEach((nodeId, x) => {
+        const y = byTime.indexOf(nodeId)
+        if (!y)
+            return
+
+        map[x][y] = nodeId
+    })
 
     return map
 }
 
 
-export interface NodeWithPosition<Node extends AbstractNode> {
-    data: Node
+export interface NodeWithPosition {
+    node: string
     position: { x: number, y: number }
 }
 
@@ -44,7 +56,7 @@ export interface MapToPositionsOptions {
     offset?: number
 }
 
-export function* mapToPositions<Node extends AbstractNode>(map: NodesMap<Node>, { nodeSize, offset = 0 }: MapToPositionsOptions): Generator<NodeWithPosition<Node>> {
+export function* mapToPositions(map: NodesMap, { nodeSize, offset = 0 }: MapToPositionsOptions): Generator<NodeWithPosition> {
     const nodeRadius = Math.ceil(nodeSize / 2)
 
     for (let i = 0; i < map.length; i++) {
@@ -56,7 +68,7 @@ export function* mapToPositions<Node extends AbstractNode>(map: NodesMap<Node>, 
             const x = nodeSize * i + nodeRadius + offset
             const y = nodeSize * j + nodeRadius + offset
 
-            yield { data: node, position: { x, y } }
+            yield { node, position: { x, y } }
         }
     }
 }
@@ -96,34 +108,34 @@ function getLevelFirstNode<N>(level: Array<N>): N | undefined {
     return node
 }
 
-/** 
- * Will split trees array into matrix of trees, 
- * where trees in one column not have intersections in time
- * */
-function treesLevelsToMatrix<Node extends TimeNode & AbstractNode>(trees: Array<Array<Array<Node | null>>>): Array<Array<Array<Array<Node | null>>>> {
+// /** 
+//  * Will split trees array into matrix of trees, 
+//  * where trees in one column not have intersections in time
+//  * */
+// function treesLevelsToMatrix<Node extends TimeNode & AbstractNode>(trees: Array<Array<Array<Node | null>>>): Array<Array<Array<Array<Node | null>>>> {
 
-    const treesWithIntervals = trees.map(tree => {
-        const [from, to] = getTreeTimeframe(tree) as Array<number>
-        return { from, to, data: tree }
-    })
+//     const treesWithIntervals = trees.map(tree => {
+//         const [from, to] = getTreeTimeframe(tree) as Array<number>
+//         return { from, to, data: tree }
+//     })
 
-    const splited = splitIntervals(treesWithIntervals)
+//     const splited = splitIntervals(treesWithIntervals)
 
-    return splited.map(row =>
-        row.map(({ data }) => data)
-    )
-}
+//     return splited.map(row =>
+//         row.map(({ data }) => data)
+//     )
+// }
 
-export interface TimeInterval<T> {
-    from: number
-    to: number
-    data: T
-}
+// export interface TimeInterval<T> {
+//     from: number
+//     to: number
+//     data: T
+// }
 
-/** 
- * Will split time intervals into multiple timelines,
- * for prevent overlap into one timeline
- * */
-function splitIntervals<T>(intervals: Array<TimeInterval<T>>): Array<Array<TimeInterval<T>>> {
-    return []
-}
+// /** 
+//  * Will split time intervals into multiple timelines,
+//  * for prevent overlap into one timeline
+//  * */
+// function splitIntervals<T>(intervals: Array<TimeInterval<T>>): Array<Array<TimeInterval<T>>> {
+//     return []
+// }
