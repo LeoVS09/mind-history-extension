@@ -22,6 +22,7 @@
     "resolveJsonModule": true,
     "noEmit": false,
     "jsx": "react",
+    "downlevelIteration": true
   },
   "include": [
     "src"

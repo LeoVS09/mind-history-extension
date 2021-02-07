@@ -10,7 +10,7 @@ export interface AbstractEdge {
 }
 
 /** Graph which can contain multiple independentend trees */
-export class AbstractTreesGraph<N extends AbstractNode, E extends AbstractEdge> extends Graph {
+export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends AbstractEdge = AbstractEdge> extends Graph {
 
     constructor() {
         super({ compound: true })
@@ -45,6 +45,74 @@ export class AbstractTreesGraph<N extends AbstractNode, E extends AbstractEdge> 
         return [root, ...children]
     }
 
+    getTreeByLevels(rootId: string): Array<Array<N>> | undefined {
+        if (!this.node(rootId))
+            return
+
+        const result: Array<Array<string>> = [[rootId]]
+
+        while (true) {
+            const lastRow = result[result.length - 1]
+            const nextRow = []
+
+            for (const nodeId of lastRow) {
+                const childrenIds = this.children(nodeId)
+                if (childrenIds && childrenIds.length)
+                    nextRow.push(...childrenIds)
+            }
+
+            if (!nextRow.length)
+                break
+
+            result.push(nextRow)
+        }
+
+        return result
+            .map(row =>
+                row
+                    .map(id => this.node(id) as N)
+                    .filter(n => !!n)
+            )
+    }
+
+    *getAllTrees(): Generator<Array<N>> {
+        const rootsIds = this.getAllTreeRoots()
+
+        for (const id of rootsIds) {
+            const tree = this.getTree(id)
+            if (!tree || !tree.length)
+                continue
+
+            yield tree
+        }
+    }
+
+    getAllTreeRoots(): Array<string> {
+        return this.nodes()
+            .filter(id => !this.haveParent(id))
+            .filter(isUnique)
+    }
+
+    haveParent(id: string): boolean {
+        return !!this.parent(id)
+    }
+
+    flatTree(rootId: string): Array<string> {
+        const children = this.children(rootId) || []
+
+        const result = []
+        for (const child of children) {
+            const flatten = this.flatTree(child)
+            result.push(...flatten)
+        }
+
+        return injectInMiddle(result, rootId)
+    }
+
+}
+
+function isUnique<T>(value: T, index: number, self: Array<T>): boolean {
+    return self.indexOf(value) === index
 }
 
 
@@ -59,6 +127,13 @@ function getWholeTreeChildren(graph: Graph, rootId: string): Array<string> {
     for (const child of children)
         result.push(child, ...getWholeTreeChildren(graph, child))
 
-
     return result
+}
+
+export function injectInMiddle<T>(arr: Array<T>, item: T): Array<T> {
+    if (!arr.length)
+        return [item]
+
+    const middleIndex = Math.ceil(arr.length / 2)
+    return arr.splice(middleIndex, 0, item)
 }

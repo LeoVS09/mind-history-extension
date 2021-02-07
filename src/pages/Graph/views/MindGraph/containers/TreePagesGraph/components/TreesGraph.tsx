@@ -1,6 +1,8 @@
 import React from 'react'
 import { CytoscapeWrapper, CytoscapeWrapperProps } from './CytoscapeWrapper'
 
+export const MAX_NODE_SIZE = 60
+
 export interface TreesGraphProps extends CytoscapeWrapperProps {
 
 }
@@ -27,8 +29,8 @@ const graphStyles = [
     {
         "selector": "node",
         "style": {
-            "width": "mapData(score, 1, 5, 30, 60)",
-            "height": "mapData(score, 1, 5, 30, 60)",
+            "width": `mapData(score, 1, 5, 30, ${MAX_NODE_SIZE})`,
+            "height": `mapData(score, 1, 5, 30, ${MAX_NODE_SIZE})`,
             "label": "data(label)",
             "font-size": "14px",
             "text-valign": "bottom",

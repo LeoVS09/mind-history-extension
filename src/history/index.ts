@@ -3,6 +3,7 @@ export interface PageData {
     title?: string;
     favIconUrl?: string;
     lastAccessTime?: number
+    creationTime?: number;
     isClosed?: boolean
 }
 
