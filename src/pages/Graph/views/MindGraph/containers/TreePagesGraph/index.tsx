@@ -6,8 +6,8 @@ import { PageVisit } from "../../../../../../history"
 import { PageDataDictanory } from "../../../../../../types"
 import { FullScreenTreesGraph } from "./components/FullScreenTreesGraph"
 import { MAX_NODE_SIZE } from "./components/TreesGraph"
-import { renderState, setupCyHooks } from "./graph"
-import { buildMapByTime, mapToPositions, TimeNode } from "./position"
+import { setupCyHooks } from "./graph"
+import { buildMapByTime, mapToPositions, TimeNode } from "./layout"
 import { filterPages, mapToNodes, mapToEdges, countEdges } from "./prepare"
 
 export interface TreePagesGraphProps {

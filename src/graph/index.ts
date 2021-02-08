@@ -109,6 +109,13 @@ export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends
         return injectInMiddle(result, rootId)
     }
 
+    /** Return all nodes values */
+    nodesValues(): Array<N> {
+        return this.nodes()
+            .map(id => this.node(id))
+            .filter(node => !!node)
+    }
+
 }
 
 function isUnique<T>(value: T, index: number, self: Array<T>): boolean {

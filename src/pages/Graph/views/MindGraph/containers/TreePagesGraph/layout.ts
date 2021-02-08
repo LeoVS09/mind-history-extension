@@ -22,15 +22,9 @@ export function buildMapByTime<
     for (const rootId of graph.getAllTreeRoots())
         byTree.push(...graph.flatTree(rootId))
 
-    const byTime = graph.nodes().sort((a, b) => {
-        const { timestamp: tA } = graph.node(a) || {}
-        const { timestamp: tB } = graph.node(b) || {}
-
-        if (!a || !b)
-            return 0
-
-        return tA - tB
-    })
+    const byTime = graph.nodesValues()
+        .sort(inChronicleOrder)
+        .map(({ id }) => id)
 
     const map = matrix.create<string, null>(byTree.length, byTime.length, null)
 
@@ -43,6 +37,20 @@ export function buildMapByTime<
     })
 
     return map
+}
+
+// Need wrap isFinite for correctly typescript checks
+const isNumber = (a: any): a is number => Number.isFinite(a)
+
+/** Comparator function for sort nodes in chronicle order */
+export function inChronicleOrder<Node extends TimeNode & AbstractNode>(
+    { timestamp: a }: Node,
+    { timestamp: b }: Node
+): number {
+    if (!isNumber(a) || !isNumber(b))
+        return 0
+
+    return a - b
 }
 
 
