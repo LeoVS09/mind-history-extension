@@ -17,20 +17,27 @@ export function buildMapByTime<
     Node extends TimeNode & AbstractNode,
     Edge extends AbstractEdge
 >(graph: AbstractTreesGraph<Node, Edge>): NodesMap {
-    const byTree = []
+    let nodesToBranchesDict: { [id: string]: number } = {}
 
-    for (const rootId of graph.getAllTreeRoots())
-        byTree.push(...graph.flatTree(rootId))
+    for (const rootId of graph.getAllTreeRoots()) {
+        const [biggestBranchNumber] = Object.values(nodesToBranchesDict).sort(ascending).slice(-1)
+        nodesToBranchesDict = {
+            ...nodesToBranchesDict,
+            ...graph.branchesDictionary(rootId, biggestBranchNumber ? biggestBranchNumber + 1 : 0)
+        }
+    }
+
+    console.log('nodesToBranchesDict', nodesToBranchesDict)
 
     const byTime = graph.nodesValues()
         .sort(inChronicleOrder)
         .map(({ id }) => id)
 
-    const map = matrix.create<string, null>(byTree.length, byTime.length, null)
+    const map = matrix.create<string, null>(Object.keys(nodesToBranchesDict).length, byTime.length, null)
 
-    byTree.forEach((nodeId, x) => {
-        const y = byTime.indexOf(nodeId)
-        if (!y)
+    byTime.forEach((nodeId, y) => {
+        const x = nodesToBranchesDict[nodeId]
+        if (!x)
             return
 
         map[x][y] = nodeId
@@ -38,6 +45,10 @@ export function buildMapByTime<
 
     return map
 }
+
+
+
+const ascending = (a: number, b: number) => a - b
 
 // Need wrap isFinite for correctly typescript checks
 const isNumber = (a: any): a is number => Number.isFinite(a)

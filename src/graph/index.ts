@@ -9,6 +9,10 @@ export interface AbstractEdge {
     target: string
 }
 
+export interface BranchesDictionary {
+    [id: string]: number
+}
+
 /** Graph which can contain multiple independentend trees */
 export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends AbstractEdge = AbstractEdge> extends Graph {
 
@@ -89,7 +93,7 @@ export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends
 
     getAllTreeRoots(): Array<string> {
         return this.nodes()
-            .filter(id => !this.haveParent(id))
+            .filter(id => !this.haveParent(id) && this.children(id)?.length)
             .filter(isUnique)
     }
 
@@ -107,6 +111,26 @@ export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends
         }
 
         return injectInMiddle(result, rootId)
+    }
+
+    /** Will return dictanory of node id, where each value is branch number in which node placed */
+    branchesDictionary(rootId: string, initialNumber = 0): BranchesDictionary {
+        let branchIndex = initialNumber
+        let dict: BranchesDictionary = {
+            [rootId]: branchIndex,
+        }
+
+        const children = this.children(rootId) || []
+
+        for (const child of children) {
+            dict = {
+                ...dict,
+                ...this.branchesDictionary(child, branchIndex),
+            }
+            branchIndex++
+        }
+
+        return dict
     }
 
     /** Return all nodes values */
