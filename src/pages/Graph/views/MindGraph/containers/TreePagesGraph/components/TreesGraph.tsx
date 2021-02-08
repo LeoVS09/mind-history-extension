@@ -9,10 +9,6 @@ export interface TreesGraphProps extends CytoscapeWrapperProps {
 
 export const TreesGraph: React.FC<TreesGraphProps> = (props) =>
     <CytoscapeWrapper
-        layout={{
-            name: 'cose',
-            randomize: true,
-        }}
         stylesheet={graphStyles}
         {...props}
     />

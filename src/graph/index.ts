@@ -135,5 +135,7 @@ export function injectInMiddle<T>(arr: Array<T>, item: T): Array<T> {
         return [item]
 
     const middleIndex = Math.ceil(arr.length / 2)
-    return arr.splice(middleIndex, 0, item)
+    arr.splice(middleIndex, 0, item) // mutate array
+
+    return arr
 }
