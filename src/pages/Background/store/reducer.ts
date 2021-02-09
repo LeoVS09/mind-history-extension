@@ -43,7 +43,7 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
             lastAccessTime: getLastOrExistedTime(page.lastAccessTime, oldData.lastAccessTime)
         }
         if (process.env.DEBUG)
-            console.debug('Page data saved', JSON.stringify(state, null, 2))
+            console.debug('Page data saved', JSON.parse(JSON.stringify(state, null, 2)))
 
     },
 

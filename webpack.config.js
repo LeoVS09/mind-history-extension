@@ -105,7 +105,7 @@ var options = {
     new webpack.ProgressPlugin(),
     // clean the dist folder
     new CleanWebpackPlugin({
-      verbose: true,
+      verbose: false,
       cleanStaleWebpackAssets: true,
     }),
     // expose and write the allowed env vars on the compiled bundle
@@ -168,9 +168,50 @@ var options = {
   },
 }
 
-if (env.NODE_ENV === 'development')
+if (env.NODE_ENV === 'development') {
   options.devtool = 'eval-cheap-module-source-map'
-else {
+
+  options.stats = {
+    // fallback value
+    all: false,
+    // Disable showing asset information
+    assets: false,
+    // Disable showing cached modules and cached assets
+    cached: false,
+    cachedAssets: false,
+    // Disable showing children
+    children: false,
+    // Add build date and time information
+    builtAt: true,
+    // Add minimal chunk information
+    chunks: true,
+    chunkGroups: false,
+    chunkModules: false,
+    chunkOrigins: false,
+    // Disable displaying the entry points with the corresponding bundles
+    entrypoints: false,
+    // Enable colored output
+    colors: true,
+    // Display errors
+    errors: true,
+    logging: 'error',
+    // Add details to errors (like resolving log)
+    errorDetails: true,
+    hash: false,
+    // Built modules information
+    modules: false,
+    // Disable showing performance hint when file size exceeds `performance.maxAssetSize`
+    performance: false,
+    // Add timing information
+    timings: true,
+    // Add webpack version information
+    version: true,
+    // Add warnings
+    warnings: true,
+    // Why modules included
+    reasons: false
+  }
+} else {
   options.optimization = {
     minimize: true,
     minimizer: [

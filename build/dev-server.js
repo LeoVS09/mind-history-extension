@@ -41,6 +41,11 @@ var server = new WebpackDevServer(compiler, {
     'Access-Control-Allow-Origin': '*',
   },
   disableHostCheck: true,
+  stats: config.stats,
+  overlay: {
+    warnings: false,
+    errors: true,
+  },
 })
 
 server.listen(env.PORT)

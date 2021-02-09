@@ -2,16 +2,28 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { store } from './store'
+import { getFaviconsUrls, store } from './store'
 import App from './App'
 import './index.css'
 import { connectToDataBus } from './data-bus'
+import { unblockResourcesLoading } from '../../resourcesLoading'
 
-render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    window.document.querySelector('#app-container')
-)
+async function main() {
 
-connectToDataBus()
+    try {
+        await unblockResourcesLoading(getFaviconsUrls)
+    } catch (err) {
+        console.warn('Cannot set unblock for favicons', err)
+    }
+
+    render(
+        <Provider store={store}>
+            <App />
+        </Provider>,
+        window.document.querySelector('#app-container')
+    )
+
+    connectToDataBus()
+}
+
+main()
