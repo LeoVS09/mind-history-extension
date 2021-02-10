@@ -27,7 +27,7 @@ export function buildMapByTime<
         }
     }
 
-    console.log('nodesToBranchesDict', nodesToBranchesDict)
+    console.log('nodesToBranchesDict', nodesToBranchesDict, Object.keys(nodesToBranchesDict).length)
 
     const byTime = graph.nodesValues()
         .sort(inChronicleOrder)
@@ -37,7 +37,7 @@ export function buildMapByTime<
 
     byTime.forEach((nodeId, y) => {
         const x = nodesToBranchesDict[nodeId]
-        if (!x)
+        if (x === undefined)
             return
 
         map[x][y] = nodeId
