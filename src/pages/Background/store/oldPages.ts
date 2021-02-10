@@ -1,4 +1,4 @@
-import { AbstractEdge, AbstractTreesGraph, AbstractNode } from "../../../graph"
+import { AbstractEdge, AbstractTreesGraph, AbstractNode } from "../../../graph/AbstractTreesGraph"
 import { PageData, PageVisit } from "../../../history"
 import { PageDataDictanory } from "../../../types"
 import { PagesState } from "./state"

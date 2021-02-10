@@ -1,9 +1,8 @@
-import { AbstractEdge, AbstractNode, AbstractTreesGraph } from "../../../../../../graph"
+import { compudeBranchToTimelineDict, compudeNodesToBranchesDict, inChronicleOrder, TimeNode } from "../../../../../../graph"
+import { AbstractEdge, AbstractNode, AbstractTreesGraph } from "../../../../../../graph/AbstractTreesGraph"
 import * as matrix from '../../../../../../matrix'
 
-export interface TimeNode {
-    timestamp: number | undefined;
-}
+
 
 export type NodesMap = Array<Array<string | null>>;
 
@@ -17,53 +16,34 @@ export function buildMapByTime<
     Node extends TimeNode & AbstractNode,
     Edge extends AbstractEdge
 >(graph: AbstractTreesGraph<Node, Edge>): NodesMap {
-    let nodesToBranchesDict: { [id: string]: number } = {}
 
-    for (const rootId of graph.getAllTreeRoots()) {
-        const [biggestBranchNumber] = Object.values(nodesToBranchesDict).sort(ascending).slice(-1)
-        nodesToBranchesDict = {
-            ...nodesToBranchesDict,
-            ...graph.branchesDictionary(rootId, biggestBranchNumber ? biggestBranchNumber + 1 : 0)
-        }
-    }
-
-    console.log('nodesToBranchesDict', nodesToBranchesDict, Object.keys(nodesToBranchesDict).length)
+    const nodeToBranchesDict = compudeNodesToBranchesDict(graph)
+    const branchToTimeline = compudeBranchToTimelineDict(graph, nodeToBranchesDict)
 
     const byTime = graph.nodesValues()
         .sort(inChronicleOrder)
         .map(({ id }) => id)
 
-    const map = matrix.create<string, null>(Object.keys(nodesToBranchesDict).length, byTime.length, null)
+    const map = matrix.create<string, null>(Object.keys(nodeToBranchesDict).length, byTime.length, null)
 
-    byTime.forEach((nodeId, y) => {
-        const x = nodesToBranchesDict[nodeId]
-        if (x === undefined)
+    byTime.forEach((nodeId, moment) => {
+        const branchNumber = nodeToBranchesDict[nodeId]
+        if (branchNumber === undefined)
             return
 
-        map[x][y] = nodeId
+        const timeline = branchToTimeline[branchNumber]
+        if (!timeline) {
+            // branch without timeline
+            // probably because not have timestamps in nodes
+            // TODO: fix
+            return
+        }
+
+        map[timeline][moment] = nodeId
     })
 
     return map
 }
-
-
-
-const ascending = (a: number, b: number) => a - b
-
-// Need wrap isFinite for correctly typescript checks
-const isNumber = (a: any): a is number => Number.isFinite(a)
-
-/** Comparator function for sort nodes in chronicle order */
-export function inChronicleOrder<Node extends TimeNode & AbstractNode>(
-    { timestamp: a }: Node,
-    { timestamp: b }: Node
-): number {
-    if (!isNumber(a) || !isNumber(b))
-        return 0
-
-    return a - b
-}
-
 
 export interface NodeWithPosition {
     node: string
@@ -91,70 +71,3 @@ export function* mapToPositions(map: NodesMap, { nodeSize, offset = 0 }: MapToPo
         }
     }
 }
-
-function alignByTime<Node extends TimeNode & AbstractNode>(tree: Array<Array<Node>>): Array<Array<Node | null>> {
-    const result = []
-
-    // Will make one node per lavel
-    // for allow sort this levels
-    for (let i = 0; i < tree.length; i++) {
-        const level = tree[i]
-
-        for (let j = 0; j < level.length; j++) {
-            const node = level[j]
-
-            const newLayer = (new Array(j)).fill(null)
-            newLayer[j] = node
-
-            result.push(newLayer)
-        }
-    }
-
-
-    return result.sort((firstLevel, secondLevel) => {
-        const { timestamp: a } = getLevelFirstNode(firstLevel) || {}
-        const { timestamp: b } = getLevelFirstNode(secondLevel) || {}
-
-        if (!a || !b)
-            return 0
-
-        return a - b
-    })
-}
-
-function getLevelFirstNode<N>(level: Array<N>): N | undefined {
-    const [node] = level.filter(n => !!n)
-    return node
-}
-
-// /** 
-//  * Will split trees array into matrix of trees, 
-//  * where trees in one column not have intersections in time
-//  * */
-// function treesLevelsToMatrix<Node extends TimeNode & AbstractNode>(trees: Array<Array<Array<Node | null>>>): Array<Array<Array<Array<Node | null>>>> {
-
-//     const treesWithIntervals = trees.map(tree => {
-//         const [from, to] = getTreeTimeframe(tree) as Array<number>
-//         return { from, to, data: tree }
-//     })
-
-//     const splited = splitIntervals(treesWithIntervals)
-
-//     return splited.map(row =>
-//         row.map(({ data }) => data)
-//     )
-// }
-
-// export interface TimeInterval<T> {
-//     from: number
-//     to: number
-//     data: T
-// }
-
-// /** 
-//  * Will split time intervals into multiple timelines,
-//  * for prevent overlap into one timeline
-//  * */
-// function splitIntervals<T>(intervals: Array<TimeInterval<T>>): Array<Array<TimeInterval<T>>> {
-//     return []
-// }

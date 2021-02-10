@@ -1,13 +1,14 @@
 import React from "react"
 import CytoscapeComponent from "react-cytoscapejs"
 import { useHistory } from "react-router-dom"
-import { AbstractTreesGraph, AbstractNode, AbstractEdge } from "../../../../../../graph"
+import { TimeNode } from "../../../../../../graph"
+import { AbstractTreesGraph, AbstractNode, AbstractEdge } from "../../../../../../graph/AbstractTreesGraph"
 import { PageVisit } from "../../../../../../history"
 import { PageDataDictanory } from "../../../../../../types"
 import { FullScreenTreesGraph } from "./components/FullScreenTreesGraph"
 import { MAX_NODE_SIZE } from "./components/TreesGraph"
 import { setupCyHooks } from "./graph"
-import { buildMapByTime, mapToPositions, TimeNode } from "./layout"
+import { buildMapByTime, mapToPositions } from "./layout"
 import { filterPages, mapToNodes, mapToEdges, countEdges } from "./prepare"
 
 export interface TreePagesGraphProps {
