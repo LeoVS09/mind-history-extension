@@ -1,6 +1,5 @@
-import { getTabGrantedData } from "./types/access"
-import { isLoaded } from "./types/guards"
 import { store, actions } from "./store"
+import { now } from "./time"
 
 // TODO: set tab as closed when user close tab
 
@@ -14,23 +13,24 @@ export function registerOnTabOpenHook() {
         if (changeInfo.url) {
             store.dispatch(actions.savePageData({
                 url: changeInfo.url,
+                time: now(),
                 page: { title: changeInfo.title, favIconUrl: changeInfo.favIconUrl }
             }))
         }
-        if (!isLoaded(tab))
-            return
 
-        const { url, title, favIconUrl } = getTabGrantedData(tab)
-        console.log(`Tab "${title}" has been loaded.`)
+        const url = tab.url || tab.pendingUrl
+        const { title, favIconUrl } = tab
+        console.log(`Tab "${title || url}" updated.`)
 
         if (!url) {
-            console.warn("Tab loaded, but not have url")
+            console.warn("Tab updated, but not have url")
             return
         }
-        store.dispatch(actions.savePageData({ url, page: { title, favIconUrl } }))
+        store.dispatch(actions.savePageData({ url, page: { title, favIconUrl }, time: now() }))
     })
 
     chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
+        const time = now()
         chrome.tabs.get(tabId, tab => {
             if (process.env.DEBUG)
                 console.debug("chrome.tabs.onActivated", tabId, tab)
@@ -44,16 +44,17 @@ export function registerOnTabOpenHook() {
             }
             store.dispatch(actions.savePageData({
                 url,
+                time,
                 page: {
                     title: tab.title,
                     favIconUrl: tab.favIconUrl,
-                    lastAccessTime: new Date().getTime()
+                    lastAccessTime: time
                 }
             }))
 
             if (tab.status === 'loading') {
-                console.log('onActivated Active tab is changed to loading page, with url', url, tab)
                 // called when start load new page in new tab    
+                console.log('onActivated Active tab is changed to loading page, with url', url, tab)
                 return
             }
 

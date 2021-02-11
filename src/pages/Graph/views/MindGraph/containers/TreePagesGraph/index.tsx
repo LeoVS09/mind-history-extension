@@ -41,6 +41,7 @@ export const TreePagesGraph: React.FC<TreePagesGraphProps> = ({ pages, history, 
 
     const map = buildMapByTime(g)
     const nodesWithPosition = [...mapToPositions(map, { nodeSize: MAX_NODE_SIZE, offset: Math.ceil(MAX_NODE_SIZE / 2) })]
+    console.log('nodes with position:', nodesWithPosition)
 
     const resultNodes = nodesWithPosition
         .map(node => ({
@@ -55,6 +56,7 @@ export const TreePagesGraph: React.FC<TreePagesGraphProps> = ({ pages, history, 
         .filter(({ data: edge }) => existingUrls.includes(edge.source) && existingUrls.includes(edge.target))
 
     const elements = CytoscapeComponent.normalizeElements({ nodes: resultNodes, edges: resultEdges })
+    console.log('result elements:', elements)
     if (!elements.length)
         return null
 

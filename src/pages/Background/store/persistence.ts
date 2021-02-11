@@ -1,5 +1,12 @@
 
-const LOCAL_STORAGE_KEY = 'MIND_HISTORY'
+
+
+const PRODUCTION_STORAGE_KEY = 'mind_history'
+const TESTING_STORAGE_KEY = process.env.TEST_STORAGE ? `mind_history/testing/${process.env.TEST_STORAGE}` : false
+const LOCAL_STORAGE_KEY = TESTING_STORAGE_KEY || PRODUCTION_STORAGE_KEY
+
+if (TESTING_STORAGE_KEY)
+    console.log('Testing storage enabled, will use key', LOCAL_STORAGE_KEY)
 
 export function save(state: Object) {
     try {
@@ -12,9 +19,8 @@ export function save(state: Object) {
 export function retrive<T extends Object>(): T | undefined {
     try {
         const item = localStorage.getItem(LOCAL_STORAGE_KEY)
-        if (!item) 
+        if (!item)
             return
-        
 
         return JSON.parse(item)
     } catch (err) {

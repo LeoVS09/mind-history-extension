@@ -112,6 +112,7 @@ var options = {
     new webpack.EnvironmentPlugin({
       'NODE_ENV': 'development',
       'DEBUG': false,
+      'TEST_STORAGE': false,
     }),
     new CopyWebpackPlugin({
       patterns: [

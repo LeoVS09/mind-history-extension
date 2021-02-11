@@ -7,7 +7,7 @@ export const connectToDataBus = () => {
     })
 
     port.onMessage.addListener((msg: DataBusMessage) => {
-        console.log("message recieved" + msg)
+        console.log("message recieved", msg)
         if (msg.type === MessageTypes.ACTUAL_PAGE_STORE) {
             const { payload: { pages, history } } = msg as DataBusMessage<ActualPageStorePayload>
             store.dispatch(actions.setHistory(history))

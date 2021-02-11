@@ -30,7 +30,7 @@ export function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
                 id: url,
                 label: computeLabel({ ...page, url }),
                 favIconUrl: page.favIconUrl,
-                timestamp: page.lastAccessTime
+                timestamp: page.openedAt
             },
             // position: { x: getRandomInt(0, MAX_WIDTH), y: getRandomInt(0, MAX_HEIGHT) }
         })

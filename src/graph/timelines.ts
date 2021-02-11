@@ -1,5 +1,4 @@
-import { AbstractEdge, AbstractNode, AbstractTreesGraph } from "./AbstractTreesGraph"
-import { NodeToBranchesDictionary } from "./branches"
+import { AbstractEdge, AbstractNode, AbstractTreesGraph, NodeToBranchesDictionary } from "./AbstractTreesGraph"
 import { inChronicleOrder } from "./sort"
 import { TimeNode } from "./types"
 
@@ -9,19 +8,22 @@ export function compudeBranchToTimelineDict<
 >(graph: AbstractTreesGraph<Node, Edge>, nodeToBranchesDict: NodeToBranchesDictionary) {
     const branches = [] as Array<Array<string>>
 
+    // TODO: refactor
     Object.keys(nodeToBranchesDict)
         .forEach(id => {
-            const branchNumber = nodeToBranchesDict[id]
+            nodeToBranchesDict[id]
+                .forEach(branchNumber => {
 
-            if (!branches[branchNumber])
-                branches[branchNumber] = []
+                    if (!branches[branchNumber])
+                        branches[branchNumber] = []
 
-            branches[branchNumber].push(id)
+                    branches[branchNumber].push(id)
+                })
         })
 
     const branchesWithTimePeriod = branches
-        .map((nodesIds, index) => {
-            const nodes = nodesIds.map(id => graph.node(id))
+        .map((nodeIds, index) => {
+            const nodes = nodeIds.map(id => graph.node(id))
 
             const period = getTimePeriod(nodes)
             if (!period)
@@ -40,6 +42,8 @@ export function compudeBranchToTimelineDict<
             branchToTimeline[branch.index] = i
         )
     )
+
+    console.log('branch to timeline', branchToTimeline)
 
     return branchToTimeline
 }

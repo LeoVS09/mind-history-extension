@@ -26,21 +26,25 @@ export function buildMapByTime<
 
     const map = matrix.create<string, null>(Object.keys(nodeToBranchesDict).length, byTime.length, null)
 
-    byTime.forEach((nodeId, moment) => {
-        const branchNumber = nodeToBranchesDict[nodeId]
-        if (branchNumber === undefined)
-            return
+    byTime
+        .reverse() // for show firstly last opened
+        .forEach((nodeId, moment) => {
+            const branchNumbers = nodeToBranchesDict[nodeId]
+            if (branchNumbers === undefined)
+                return
 
-        const timeline = branchToTimeline[branchNumber]
-        if (!timeline) {
-            // branch without timeline
-            // probably because not have timestamps in nodes
-            // TODO: fix
-            return
-        }
+            const [firstBranch] = branchNumbers
 
-        map[timeline][moment] = nodeId
-    })
+            const timeline = branchToTimeline[firstBranch]
+            if (timeline === undefined) {
+                // branch without timeline
+                // probably because not have timestamps in nodes
+                // TODO: fix
+                return
+            }
+
+            map[timeline][moment] = nodeId
+        })
 
     return map
 }

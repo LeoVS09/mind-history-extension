@@ -9,15 +9,15 @@ export interface AbstractEdge {
     target: string
 }
 
-export interface BranchesDictionary {
-    [id: string]: number
+export interface NodeToBranchesDictionary {
+    [id: string]: Array<number>
 }
 
 /** Graph which can contain multiple independentend trees */
 export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends AbstractEdge = AbstractEdge> extends Graph {
 
     constructor() {
-        super({ compound: true })
+        super({ compound: true, multigraph: false })
     }
 
     addNodes(nodes: Array<N>) {
@@ -28,13 +28,22 @@ export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends
 
     addEdges(edges: Array<E>) {
         for (const edge of edges) {
-            this.setEdge(edge.source, edge.target, edge)
             try {
+                this.setEdgeWithCheck(edge.source, edge.target, edge)
                 this.setParent(edge.target, edge.source)
             } catch (e) {
-                console.warn('Error on set parent for edge', edge, '\n', e)
+                console.warn('Error on set edge or parent for edge', edge, '\n', e)
             }
         }
+    }
+
+    // Multigraph check not working in graphlib
+    setEdgeWithCheck(from: string, to: string, value?: any) {
+        // TODO: still not working
+        if (this.edge(from, to) || this.edge(to, from))
+            throw new Error("Cannot set second edge between nodes")
+
+        this.setEdge(from, to, value)
     }
 
     getTree(rootId: string): Array<N> | undefined {
@@ -114,15 +123,19 @@ export class AbstractTreesGraph<N extends AbstractNode = AbstractNode, E extends
     }
 
     /** Will return dictanory of node id, where each value is branch number in which node placed */
-    branchesDictionary(rootId: string, initialNumber = 0): BranchesDictionary {
-        let branchIndex = initialNumber
-        let dict: BranchesDictionary = {
-            [rootId]: branchIndex,
+    branchesDictionary(rootId: string, initialNumber = 0): NodeToBranchesDictionary {
+
+        const rootBranches = [initialNumber]
+        let dict: NodeToBranchesDictionary = {
+            [rootId]: rootBranches,
         }
 
         const children = this.children(rootId) || []
-
+        let branchIndex = initialNumber
         for (const child of children) {
+            if (branchIndex !== initialNumber)
+                rootBranches.push(branchIndex)
+
             dict = {
                 ...dict,
                 ...this.branchesDictionary(child, branchIndex),

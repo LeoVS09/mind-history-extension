@@ -1,11 +1,11 @@
 import { tabs } from "../../browser"
 import { NotHavePermissionError } from "./errors"
 import { store, actions } from "./store"
+import { now } from "./time"
 
 export function registerOnVisitPageHook() {
     if (!chrome.history)
         throw new NotHavePermissionError('history', 'access visited pages urls')
-
 
     chrome.history.onVisited.addListener(async event => {
         console.log('onVisited', event.url)
@@ -20,31 +20,33 @@ export function registerOnVisitPageHook() {
                 const time = visit.visitTime
 
                 console.log('getVisits', event.url, 'at', time, 'on type', visit.transition)
-                store.dispatch(actions.savePageData({ url: event.url!, page: { lastAccessTime: time } }))
-
-                // if (isOnFormSubmit(visit)) {
-                //     console.log('User opened page', event.url, ' from form submit at', time)
-                //     return
-                // }
-
-                // if (isByLink(visit)) {
-                //     console.log('User opened page', event.url, ' by link at', time)
-                //     return
-                // }
-
-                // if (isFromSearchBar(visit)) {
-                //     console.log('User opened page', event.url, ' from search bar at', time)
-                //     return
-                // }
+                store.dispatch(actions.savePageData({ url: event.url!, time, page: { lastAccessTime: time } }))
             })
 
         // On visited called allways, on new page loads
         // instead of onActivated, which not called when we load new page on same tab
         // so need change current tab
         const tab = await tabs.getActive()
+        const url = tab.url || tab.pendingUrl
+        const time = now()
+        if (url) {
+            store.dispatch(actions.savePageData({
+                url,
+                // page wasn't opened at this time,
+                // but better save at least this moment, 
+                // if creation time not exists
+                time,
+                page: {
+                    title: tab.title,
+                    favIconUrl: tab.favIconUrl,
+                    lastAccessTime: time
+                }
+            }))
+        }
+
         if (tab.status === 'loading') {
-            console.log('onVisited Active tab is changed to loading page, with url', tab.pendingUrl, tab)
-            const url = tab.url || tab.pendingUrl
+            console.log('onVisited Active tab is changed to loading page, with url', url, tab)
+
             if (url)
                 store.dispatch(actions.setCurrentPage(url))
 
@@ -58,13 +60,7 @@ export function registerOnVisitPageHook() {
         }
 
         store.dispatch(actions.setCurrentPage(tab.url))
-        store.dispatch(actions.savePageData({
-            url: tab.url,
-            page: {
-                title: tab.title,
-                favIconUrl: tab.favIconUrl
-            }
-        }))
+
     })
     console.log('chrome.history.onVisited hook registered')
 }

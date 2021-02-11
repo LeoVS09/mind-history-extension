@@ -30,6 +30,8 @@ declare module "graphlib" {
 
         setNode(id: string, value?: any)
         node<T = any>(id: string): T | undefined
+        edge(from: string, to: string, name?: any): any | undefined
+        hasEdge(from: string, to: string, name?: any): boolean
         setEdge(from: string, to: string, value?: any)
         setParent(child: string, parent: string)
         edges(): Array<{ v: string, w: string }> // v source, w target
@@ -38,6 +40,7 @@ declare module "graphlib" {
         parent(id: string): string | undefined
         children(id: string): Array<string> | undefined
         nodeEdges(id: string): Array<any> | undefined
+        isMultigraph(): boolean
     }
 }
 

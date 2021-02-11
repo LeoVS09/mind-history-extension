@@ -13,23 +13,31 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
     },
 
     [actions.openPage.type]: (state, { payload: { url, time } }: ReturnType<typeof actions.openPage>) => {
-        const pageVisit: PageVisit = {
+        const page = state.pages[url] || {}
+        state.pages[url] = {
+            ...page,
+            openedAt: page.openedAt || time
+        }
+
+        const visit: PageVisit = {
             from: state.current,
             to: url,
             time
         }
-        if (!isTrackablePage(pageVisit.to))
+
+        if (!visit.from || !visit.to)
             return
 
-        if (pageVisit.from && !isTrackablePage(pageVisit.from))
+
+        if (!isTrackablePage(visit.to) || !isTrackablePage(visit.from))
             return
 
 
-        state.history.push(pageVisit)
+        state.history.push(visit)
         printHistory(state.history)
     },
 
-    [actions.savePageData.type]: (state, { payload: { url, page } }: ReturnType<typeof actions.savePageData>) => {
+    [actions.savePageData.type]: (state, { payload: { url, page, time } }: ReturnType<typeof actions.savePageData>) => {
         if (!isTrackablePage(url))
             return
 
@@ -40,11 +48,12 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
             ...oldData,
             title: page.title || oldData.title,
             favIconUrl: page.favIconUrl || oldData.favIconUrl,
-            lastAccessTime: getLastOrExistedTime(page.lastAccessTime, oldData.lastAccessTime)
+            lastAccessTime: getLastOrExistedTime(page.lastAccessTime, oldData.lastAccessTime),
+            openedAt: oldData.openedAt || time
         }
+
         if (process.env.DEBUG)
             console.debug('Page data saved', JSON.parse(JSON.stringify(state, null, 2)))
-
     },
 
     [actions.updatePagesVisitsTime.type]: (state, { payload: visitsTime }: ReturnType<typeof actions.updatePagesVisitsTime>): void => {
