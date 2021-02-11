@@ -1,11 +1,14 @@
 import React from "react"
 import CytoscapeComponent from "react-cytoscapejs"
 import { useHistory } from "react-router-dom"
-import { AbstractTreesGraph, AbstractNode } from "../../../../../../graph"
+import { TimeNode } from "../../../../../../graph"
+import { AbstractTreesGraph, AbstractNode, AbstractEdge } from "../../../../../../graph/AbstractTreesGraph"
 import { PageVisit } from "../../../../../../history"
 import { PageDataDictanory } from "../../../../../../types"
 import { FullScreenTreesGraph } from "./components/FullScreenTreesGraph"
-import { renderState, setupCyHooks } from "./graph"
+import { MAX_NODE_SIZE } from "./components/TreesGraph"
+import { setupCyHooks } from "./graph"
+import { buildMapByTime, mapToPositions } from "./layout"
 import { filterPages, mapToNodes, mapToEdges, countEdges } from "./prepare"
 
 export interface TreePagesGraphProps {
@@ -29,17 +32,36 @@ export const TreePagesGraph: React.FC<TreePagesGraphProps> = ({ pages, history, 
     })
     nodes = nodes.filter(node => node.data.score !== 0)
 
-    const elements = CytoscapeComponent.normalizeElements({ nodes, edges })
+    if (!nodes.length)
+        return null
+
+    const g = new AbstractTreesGraph<AbstractNode & TimeNode, AbstractEdge>()
+    g.addNodes(nodes.map(({ data }) => data as AbstractNode & TimeNode))
+    g.addEdges(edges.map(({ data }) => data))
+
+    const map = buildMapByTime(g)
+    const nodesWithPosition = [...mapToPositions(map, { nodeSize: MAX_NODE_SIZE, offset: Math.ceil(MAX_NODE_SIZE / 2) })]
+
+    const resultNodes = nodesWithPosition
+        .map(node => ({
+            ...node,
+            data: g.node(node.node)
+        }))
+        .filter(node => !!node.data)
+
+    const existingUrls = resultNodes.map(({ data: { id } }) => id)
+
+    const resultEdges = edges
+        .filter(({ data: edge }) => existingUrls.includes(edge.source) && existingUrls.includes(edge.target))
+
+    const elements = CytoscapeComponent.normalizeElements({ nodes: resultNodes, edges: resultEdges })
     if (!elements.length)
         return null
 
-    const g = new AbstractTreesGraph()
-    g.addNodes(nodes.map(({ data }) => data as AbstractNode))
-    g.addEdges(edges.map(({ data }) => data))
+    console.log('nodes input', g.nodes().length, 'nodes with position', nodesWithPosition.length, 'result nodes', resultNodes.length)
 
     return <FullScreenTreesGraph
         elements={elements}
-        onRerenderChange={core => renderState(core, g, nodeUrl)}
         onSetup={core => setupCyHooks(core, g, historyManager)}
     />
 }

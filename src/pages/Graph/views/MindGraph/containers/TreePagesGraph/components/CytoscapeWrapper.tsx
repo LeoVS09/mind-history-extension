@@ -2,11 +2,11 @@ import React, { useState } from "react"
 import CytoscapeComponent, { CytoscapeComponentProps, CytoscapeHook } from "react-cytoscapejs"
 
 export interface CytoscapeWrapperProps extends CytoscapeComponentProps {
-    onRerenderChange: CytoscapeHook
+    onRerenderChange?: CytoscapeHook
     onSetup: CytoscapeHook
 }
 
-export const CytoscapeWrapper: React.FC<CytoscapeWrapperProps> = ({ onRerenderChange, onSetup, ...props }) => {
+export const CytoscapeWrapper: React.FC<CytoscapeWrapperProps> = ({ onRerenderChange = () => { }, onSetup, ...props }) => {
     const [isCoreSetupComplete, setCoreSetupStatus] = useState(false)
     const coreSetupComplete = () => setCoreSetupStatus(true)
 

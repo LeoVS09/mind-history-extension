@@ -1,16 +1,14 @@
 import React from 'react'
 import { CytoscapeWrapper, CytoscapeWrapperProps } from './CytoscapeWrapper'
 
+export const MAX_NODE_SIZE = 60
+
 export interface TreesGraphProps extends CytoscapeWrapperProps {
 
 }
 
 export const TreesGraph: React.FC<TreesGraphProps> = (props) =>
     <CytoscapeWrapper
-        layout={{
-            name: 'cose',
-            randomize: true,
-        }}
         stylesheet={graphStyles}
         {...props}
     />
@@ -27,12 +25,13 @@ const graphStyles = [
     {
         "selector": "node",
         "style": {
-            "width": "mapData(score, 1, 5, 30, 60)",
-            "height": "mapData(score, 1, 5, 30, 60)",
+            "width": `mapData(score, 1, 5, 30, ${MAX_NODE_SIZE})`,
+            "height": `mapData(score, 1, 5, 30, ${MAX_NODE_SIZE})`,
             "label": "data(label)",
             "font-size": "14px",
-            "text-valign": "bottom",
-            "text-halign": "center",
+            "text-valign": "center",
+            "text-halign": "right",
+            "text-margin-x": "20px",
             "background-color": "#777",
             "color": "#fff",
             "overlay-padding": "6px",
@@ -49,9 +48,9 @@ const graphStyles = [
         "selector": "edge",
         "style": {
             'width': 1,
-            "curve-style": "haystack",
-            "haystack-radius": "0.1",
-            "opacity": "0.4",
+            "curve-style": "haystack", // try this https://js.cytoscape.org/demos/edge-types/
+            "haystack-radius": "0.1",  // may be use https://js.cytoscape.org/#style/taxi-edges
+            "opacity": "0.4",          // but with some radius smooth on angle
             "line-color": "red",
             "overlay-padding": "5px"
         }

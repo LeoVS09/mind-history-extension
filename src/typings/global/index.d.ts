@@ -33,7 +33,9 @@ declare module "graphlib" {
         setEdge(from: string, to: string, value?: any)
         setParent(child: string, parent: string)
         edges(): Array<{ v: string, w: string }> // v source, w target
+        nodes(): Array<string>
         sources(): Array<string>
+        parent(id: string): string | undefined
         children(id: string): Array<string> | undefined
         nodeEdges(id: string): Array<any> | undefined
     }
