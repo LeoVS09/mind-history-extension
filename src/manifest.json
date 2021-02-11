@@ -25,6 +25,7 @@
     "webNavigation",
     "<all_urls>",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "storage"
   ]
 }
