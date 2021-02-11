@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/LeoVS09/mind-history-extension/compare/v1.1.0...v1.2.0) (2021-02-11)
+
+
+### Bug Fixes
+
+* **graph layout:** zero branch mapping ([0b6f88d](https://github.com/LeoVS09/mind-history-extension/commit/0b6f88d4f2369cc7483a61dbfb69156199730cf4))
+* **graph-layout:** fix layout rendering ([1893f92](https://github.com/LeoVS09/mind-history-extension/commit/1893f927839a995b2629b30c439d341c7aff291c))
+
+
+### Features
+
+* **graph layout:** align branches in timelines ([3abb9ff](https://github.com/LeoVS09/mind-history-extension/commit/3abb9ff9019ae336aea81c8129d42672f460df6b))
+* **graph-layout:** use branches as horizontal axis ([d35fa6a](https://github.com/LeoVS09/mind-history-extension/commit/d35fa6a58cab29b7ac58eeb7f121efba0cc9b7b1))
+
 # [1.1.0](https://github.com/LeoVS09/mind-history-extension/compare/v1.0.0...v1.1.0) (2021-02-09)
 
 
