@@ -1,5 +1,4 @@
-import { inChronicleOrder } from '../../src/pages/Graph/views/MindGraph/containers/TreePagesGraph/layout'
-
+import { inChronicleOrder } from '../../src/graph/sort'
 
 const createNode = (timestamp: number) => ({ id: 'url', timestamp })
 
