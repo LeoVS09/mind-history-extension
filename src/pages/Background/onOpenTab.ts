@@ -48,7 +48,7 @@ export function registerOnTabOpenHook() {
                 page: {
                     title: tab.title,
                     favIconUrl: tab.favIconUrl,
-                    lastAccessTime: time
+                    lastAccessedAt: time
                 }
             }))
 

@@ -20,7 +20,7 @@ export function registerOnVisitPageHook() {
                 const time = visit.visitTime
 
                 console.log('getVisits', event.url, 'at', time, 'on type', visit.transition)
-                store.dispatch(actions.savePageData({ url: event.url!, time, page: { lastAccessTime: time } }))
+                store.dispatch(actions.savePageData({ url: event.url!, time, page: { lastAccessedAt: time } }))
             })
 
         // On visited called allways, on new page loads
@@ -39,7 +39,7 @@ export function registerOnVisitPageHook() {
                 page: {
                     title: tab.title,
                     favIconUrl: tab.favIconUrl,
-                    lastAccessTime: time
+                    lastAccessedAt: time
                 }
             }))
         }

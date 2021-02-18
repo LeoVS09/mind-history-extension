@@ -1,13 +1,11 @@
 import { AbstractEdge, AbstractTreesGraph, AbstractNode } from "../../../graph/AbstractTreesGraph"
-import { PageData, PageVisit } from "../../../history"
-import { PageDataDictanory } from "../../../types"
+import { PageVisit } from "../../../history"
+import { PageData, PageDataDictanory } from "../../../types"
 import { PagesState } from "./state"
 
 export interface PageGraphNode extends AbstractNode, PageData {
     /** url */
     id: string
-    lastAccessTime?: number
-    isClosed?: boolean
 }
 
 export interface GraphVisitEdge extends AbstractEdge, Pick<PageVisit, 'time'> {
@@ -38,11 +36,11 @@ export class PagesGraph extends AbstractTreesGraph<PageGraphNode, GraphVisitEdge
 
         let latest: PageGraphNode = nodes[0]
         for (const node of nodes) {
-            if (!node.lastAccessTime)
+            if (!node.lastAccessedAt)
                 return
 
 
-            if (latest.lastAccessTime! < node.lastAccessTime)
+            if (latest.lastAccessedAt! < node.lastAccessedAt)
                 latest = node
 
         }
@@ -85,7 +83,7 @@ export function getOldTrees(
         .filter(id => graph.nodeEdges(id)!.length > 0) // root must have at least one children
         .map(id => ({
             id,
-            time: graph.getLatestAccessedNodeInTree(id)?.lastAccessTime
+            time: graph.getLatestAccessedNodeInTree(id)?.lastAccessedAt
         }))
         .filter(({ time }) => !!time)
         .sort((a, b) => b.time! - a.time!) // will sort descending, most new at start

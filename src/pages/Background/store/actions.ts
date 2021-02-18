@@ -1,6 +1,6 @@
 import { createAction } from "@reduxjs/toolkit"
-import { PageData } from "../../../history"
 import { ExtensionSettings } from "../../../settings"
+import { PageData } from "../../../types"
 
 export interface PagesVisistTimeDictianory {
     [url: string]: number

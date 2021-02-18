@@ -1,12 +1,4 @@
 
-export interface PageData {
-    title?: string;
-    favIconUrl?: string;
-    lastAccessTime?: number
-    openedAt?: number;
-    isClosed?: boolean
-}
-
 export interface PageVisit {
     from?: string;
     to: string

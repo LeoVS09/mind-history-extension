@@ -1,6 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit"
-import { isTrackablePage, PageData, PageVisit } from "../../../history"
+import { isTrackablePage, PageVisit } from "../../../history"
 import { toGraphPage } from "../../../routing"
+import { PageData } from "../../../types"
 import { closePages } from "../onOpenTab"
 import * as actions from "./actions"
 import { getOldTrees } from "./oldPages"
@@ -48,7 +49,7 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
             ...oldData,
             title: page.title || oldData.title,
             favIconUrl: page.favIconUrl || oldData.favIconUrl,
-            lastAccessTime: getLastOrExistedTime(page.lastAccessTime, oldData.lastAccessTime),
+            lastAccessedAt: getLastOrExistedTime(page.lastAccessedAt, oldData.lastAccessedAt),
             openedAt: oldData.openedAt || time
         }
 
@@ -64,11 +65,11 @@ export const pagesReducer = createReducer<PagesState>(initialState, {
 
             state.pages[pageUrl] = {
                 ...page,
-                lastAccessTime: getLastOrExistedTime(lastPageTime, page.lastAccessTime)
+                lastAccessedAt: getLastOrExistedTime(lastPageTime, page.lastAccessedAt)
             }
         }
 
-        console.log('Pages without last access time:', Object.keys(state.pages).map(url => state.pages[url]).filter(p => !p.lastAccessTime))
+        console.log('Pages without last access time:', Object.keys(state.pages).map(url => state.pages[url]).filter(p => !p.lastAccessedAt))
     },
 
     [actions.tryCloseOldPages.type]: (state) => {

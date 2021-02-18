@@ -1,6 +1,6 @@
 import React from 'react'
-import { PageDataDictanory } from '../../../types'
-import { PageData, PageVisit } from '../../../history'
+import { PageData, PageDataDictanory } from '../../../types'
+import { PageVisit } from '../../../history'
 
 export interface HistoryLogProps {
     pages: PageDataDictanory
@@ -23,17 +23,17 @@ export const HistoryLog: React.FC<HistoryLogProps> = ({ pages, history }) => (
 )
 
 const PageLink: React.FC<{ url?: string, page?: PageData }> = ({ url, page }) => {
-    if (url && page?.title) 
+    if (url && page?.title)
         return <a href={url}>{page.title}</a>
-    
 
-    if (url) 
+
+    if (url)
         return <a href={url}>{url}</a>
-    
 
-    if (page?.title) 
+
+    if (page?.title)
         return <a href='#'>{page.title}</a>
-    
+
 
     return <a href='#'>Unknown</a>
 }
