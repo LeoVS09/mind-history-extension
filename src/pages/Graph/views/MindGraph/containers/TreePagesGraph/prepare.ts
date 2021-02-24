@@ -1,5 +1,5 @@
 import { NodeDefinition, EdgeDefinition } from "cytoscape"
-import { isTrackablePage, PageVisit } from "../../../../../../history"
+import { isTrackablePage, PageVisitModel } from "../../../../../../domain"
 import { PageDataDictanory } from "../../../../../../types"
 import { computeLabel } from "./labels"
 
@@ -40,7 +40,7 @@ export function mapToNodes(pages: PageDataDictanory): Array<NodeDefinition> {
 }
 
 
-export const mapToEdges = (history: Array<PageVisit>, existingUrls: Array<string>): Array<EdgeDefinition> => history
+export const mapToEdges = (history: Array<PageVisitModel>, existingUrls: Array<string>): Array<EdgeDefinition> => history
     .filter(visit => !!visit.from)
     .filter(visit => existingUrls.includes(visit.from!) && existingUrls.includes(visit.to))
     .map(visit => ({

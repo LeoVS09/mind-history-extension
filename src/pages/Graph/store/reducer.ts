@@ -1,10 +1,10 @@
 import { createReducer } from "@reduxjs/toolkit"
-import { PageVisit } from "../../../history"
+import { PageVisitModel } from "../../../domain"
 import { PageDataDictanory } from "../../../types"
 import * as actions from "./actions"
 
 export interface PagesStore {
-    history: Array<PageVisit>
+    history: Array<PageVisitModel>
     pages: PageDataDictanory
 }
 

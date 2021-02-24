@@ -1,4 +1,4 @@
-import { PageVisit } from "../history"
+import { PageVisitModel } from "../domain"
 import { ExtensionSettings } from "../settings"
 import { PageDataDictanory } from "../types"
 
@@ -9,7 +9,7 @@ export enum MessageTypes {
 
 export interface ActualPageStorePayload {
     pages: PageDataDictanory
-    history: Array<PageVisit>
+    history: Array<PageVisitModel>
     settings: ExtensionSettings
 }
 

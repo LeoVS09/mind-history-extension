@@ -1,6 +1,6 @@
 import React from 'react'
 import { PageDataDictanory } from '../../types'
-import { PageVisit } from '../../history'
+import { PageVisitModel } from '../../domain'
 import { HistoryLog } from './views/HistoryLog'
 import { MindGraph } from './views/MindGraph'
 import {
@@ -39,7 +39,7 @@ const Navigation: React.FC = () => (
 
 export interface RoutesProps {
   pages: PageDataDictanory
-  history: Array<PageVisit>
+  history: Array<PageVisitModel>
 }
 
 const PagesComponent: React.FC<RoutesProps> = (props) => {

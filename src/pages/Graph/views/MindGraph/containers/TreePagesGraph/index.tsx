@@ -3,7 +3,7 @@ import CytoscapeComponent from "react-cytoscapejs"
 import { useHistory } from "react-router-dom"
 import { TimeNode } from "../../../../../../graph"
 import { AbstractTreesGraph, AbstractNode, AbstractEdge } from "../../../../../../graph/AbstractTreesGraph"
-import { PageVisit } from "../../../../../../history"
+import { PageVisitModel } from "../../../../../../domain"
 import { PageDataDictanory } from "../../../../../../types"
 import { FullScreenTreesGraph } from "./components/FullScreenTreesGraph"
 import { MAX_NODE_SIZE } from "./components/TreesGraph"
@@ -13,7 +13,7 @@ import { filterPages, mapToNodes, mapToEdges, countEdges } from "./prepare"
 
 export interface TreePagesGraphProps {
     pages: PageDataDictanory
-    history: Array<PageVisit>
+    history: Array<PageVisitModel>
     nodeUrl?: string | null
 }
 

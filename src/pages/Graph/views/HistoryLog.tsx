@@ -1,10 +1,10 @@
 import React from 'react'
 import { PageData, PageDataDictanory } from '../../../types'
-import { PageVisit } from '../../../history'
+import { PageVisitModel } from '../../../domain'
 
 export interface HistoryLogProps {
     pages: PageDataDictanory
-    history: Array<PageVisit>
+    history: Array<PageVisitModel>
 }
 
 export const HistoryLog: React.FC<HistoryLogProps> = ({ pages, history }) => (

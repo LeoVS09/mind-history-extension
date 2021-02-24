@@ -1,12 +1,10 @@
-import { PageVisit } from "../../../history"
+import { PageVisitModel } from "../../../domain"
 import { ExtensionSettings, initialSettings } from "../../../settings"
 import { PageDataDictanory } from "../../../types"
 
 export interface PagesState {
     current?: string
-    history: Array<PageVisit>
-    pages: PageDataDictanory
-    // TODO: allow to change settings
+    history: Array<PageVisitModel>
     settings: ExtensionSettings
 }
 

@@ -1,4 +1,4 @@
-import { ChangeSettingsPayload, DataBusMessage, MessageTypes } from "../../data-bus"
+import { ChangeSettingsPayload, DataBusMessage, MessageTypes } from "../../dataBus"
 import { store, actions } from "./store"
 
 const currentStateMessage = (): DataBusMessage => ({

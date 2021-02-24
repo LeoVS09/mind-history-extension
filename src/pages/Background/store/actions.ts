@@ -2,9 +2,7 @@ import { createAction } from "@reduxjs/toolkit"
 import { ExtensionSettings } from "../../../settings"
 import { PageData } from "../../../types"
 
-export interface PagesVisistTimeDictianory {
-    [url: string]: number
-}
+
 
 export const setCurrentPage = createAction<string>('SET_CURRENT_PAGE')
 export const openPage = createAction<{ url: string, time: number }>('OPEN_PAGE')
