@@ -9,13 +9,13 @@ export interface ExistingPagesDictianory {
     [id: string]: ExistingPageStorageItem
 }
 
-export class PageDatabasePuchDbAdapter implements IPagePersistence {
+export class PageDatabasePouchDbAdapter implements IPagePersistence {
     async createOrUpdate(page: PageModel) {
         const id = normaliseUrl(page.url)
 
         const existing = await pouchDB.pages.get(id)
         if (!existing) {
-            await pouchDB.pages.create({
+            await pouchDB.pages.put({
                 _id: id,
                 ...page
             })
@@ -24,7 +24,7 @@ export class PageDatabasePuchDbAdapter implements IPagePersistence {
 
         const merged = mergeUpdates(existing, page)
 
-        await pouchDB.pages.update({
+        await pouchDB.pages.put({
             ...merged,
             _id: existing._id,
             _rev: existing._rev,
@@ -42,7 +42,7 @@ export class PageDatabasePuchDbAdapter implements IPagePersistence {
     }
 
     async getAllOpen(): Promise<Array<PageModel>> {
-        return await pouchDB.pages.getAllOpen()
+        return await pouchDB.pages.findAllOpen()
     }
 
     async batchCreateOrUpdate(pages: Array<PageModel>) {
@@ -58,17 +58,14 @@ export class PageDatabasePuchDbAdapter implements IPagePersistence {
 
         const existingPagesId = Object.keys(existingDict)
 
-        const notExists = pagesWithId
-            .filter(page => !existingPagesId.includes(page._id))
+        const prepared = pagesWithId.map(page => {
+            if (!existingPagesId.includes(page._id))
+                return page
 
-        const updatesOfExisting = pagesWithId
-            .filter(page => existingPagesId.includes(page._id))
-            .map(page => mergeUpdates(existingDict[page._id], page))
+            return mergeUpdates(existingDict[page._id], page)
+        })
 
-        await Promise.all([
-            notExists.length && pouchDB.pages.batchCreate(notExists),
-            updatesOfExisting.length && pouchDB.pages.batchUpdate(updatesOfExisting)
-        ])
+        await pouchDB.pages.bulkDocs(prepared)
     }
 }
 

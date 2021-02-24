@@ -1,19 +1,20 @@
 import { PageVisitModel } from "../../../domain"
-import { now } from "../time"
+import { IVistsPersistence } from "../../../buildHistory/interfaces"
+import { pouchDB } from "./drivers"
+import { timestampToId } from "./uid"
 
-export async function add(visit: PageVisitModel): Promise<void> {
-    const currentTimeNumber: number = now()
-    const currentDayNumber: number = toDay(currentTimeNumber)
+export class VisitsDatabasePouchDbAdapter implements IVistsPersistence {
 
-    // chrome allow store only 512 items
-    // so will split days to namespaces with 256 possible variations (other 256 for pages)
+    async add(visit: PageVisitModel) {
+        const id = timestampToId(visit.time)
 
-    const day = await this.visits.get(currentDayNumber) || []
-    day.push(visit)
+        await pouchDB.visits.put({
+            _id: id,
+            ...visit
+        })
+    }
 
-    await this.visits.save(currentDayNumber, day)
-}
-
-export async function get(from: number, to: number): Promise<PageVisitModel[]> {
-    return []
+    async get(from: number, to?: number): Promise<Array<PageVisitModel>> {
+        return pouchDB.visits.findByTime(from, to)
+    }
 }
