@@ -1,7 +1,5 @@
 import { AbstractNode, AbstractEdge, AbstractTreesGraph } from "../graph"
-import { PageModel, PageVisitModel } from "../domain"
-import { PageDataDictanory } from "../types"
-
+import { PageModel, PageModelDictanory, PageVisitModel } from "../domain"
 
 export interface PageGraphNode extends AbstractNode, PageModel {
     /** url */
@@ -13,7 +11,7 @@ export interface GraphVisitEdge extends AbstractEdge, Pick<PageVisitModel, 'time
 
 export class PagesGraph extends AbstractTreesGraph<PageGraphNode, GraphVisitEdge> {
 
-    addNodesFromDictionary(pages: PageDataDictanory) {
+    addNodesFromDictionary(pages: PageModelDictanory) {
         const nodes = toNodes(pages)
         this.addNodes(nodes)
     }
@@ -49,7 +47,7 @@ export class PagesGraph extends AbstractTreesGraph<PageGraphNode, GraphVisitEdge
     }
 }
 
-const toNodes = (pages: PageDataDictanory): Array<PageGraphNode> =>
+const toNodes = (pages: PageModelDictanory): Array<PageGraphNode> =>
     Object.keys(pages).map(id => ({
         ...pages[id],
         id

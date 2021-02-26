@@ -1,7 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit"
 import { isTrackablePage, PageModel, PageVisitModel } from "../../../domain"
 import { toGraphPage } from "../../../routing"
-import { closePages } from "../onOpenTab"
+import { closePages } from "../eventProducers/onOpenTab"
 import * as actions from "./actions"
 import { getOldTrees, GetOldTreesOptions } from "../closeOldPages/computeOldTrees"
 import { PagesState, initialState } from "./state"

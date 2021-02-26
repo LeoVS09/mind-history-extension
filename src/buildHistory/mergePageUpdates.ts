@@ -9,6 +9,7 @@ export function mergeUpdates<T extends PageModel>(old: T, updates: PageModel): T
         favIconUrl: updates.favIconUrl || old.favIconUrl,
         lastAccessedAt: lastOf(old.lastAccessedAt, updates.lastAccessedAt),
         openedAt: old.openedAt || updates.openedAt,
+        isOpen: updates.isOpen === undefined ? old.isOpen : updates.isOpen,
     }
 }
 

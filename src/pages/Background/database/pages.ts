@@ -1,9 +1,7 @@
-import { IPagePersistence } from "../../../buildHistory/interfaces"
-import { mergeUpdates } from "../../../buildHistory/mergePageUpdates"
-import { PageModel } from "../../../domain"
+import { IPagePersistence, mergeUpdates } from "../../../buildHistory"
+import { PageModel, normaliseUrl } from "../../../domain"
 import { pouchDB } from "./drivers"
 import { ExistingPageStorageItem } from "./drivers/pouchDB"
-import { normaliseUrl } from "./uid"
 
 export interface ExistingPagesDictianory {
     [id: string]: ExistingPageStorageItem

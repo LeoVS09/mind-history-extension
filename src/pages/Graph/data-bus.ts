@@ -1,4 +1,4 @@
-import { DataBusMessage, ActualPageStorePayload, MessageTypes } from "../../dataBus"
+import { DataBusMessage, ActualPageStorePayload, MessageTypes } from "../../eventBus"
 import { store, actions } from "./store"
 
 export const connectToDataBus = () => {

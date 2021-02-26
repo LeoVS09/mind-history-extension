@@ -1,11 +1,11 @@
 import qs from 'query-string'
-import { IRouter } from './pages/Background/closeOldPages/interfaces'
 
 export interface OpenPageOptions {
     index?: number
 }
 
-export class Router implements IRouter {
+export class Router {
+    /** Will create graph tab page with given index, but not show it */
     createGraphPage(nodeUrl: string, index?: number): void {
         const url = chrome.runtime.getURL("graph.html")
         chrome.tabs.create({
@@ -15,6 +15,8 @@ export class Router implements IRouter {
             selected: false,
         })
     }
+
+    /** Will create options tab and show it to the user*/
     openOptionsPage = () => {
         chrome.tabs.create({ url: chrome.runtime.getURL("options.html") })
     }

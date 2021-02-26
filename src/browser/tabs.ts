@@ -25,3 +25,42 @@ export const getScriptTab = (): Promise<chrome.tabs.Tab> => new Promise((resolve
         resolve(tab)
     })
 })
+
+export const getTab = (queryInfo: chrome.tabs.QueryInfo) => new Promise<Array<chrome.tabs.Tab>>(resolve =>
+    chrome.tabs.query(queryInfo, tabs => resolve(tabs || []))
+)
+
+export const getTabById = (tabId: number) => new Promise<chrome.tabs.Tab>((resolve, reject) => {
+    chrome.tabs.get(tabId, tab => {
+        if (tab)
+            return resolve(tab)
+
+        reject(new Error('Cannot find tab by id'))
+    })
+})
+
+export const closePages = async (urls: Array<string>) => {
+    const tabs = await getTab({ url: urls })
+    const tabIds = tabs
+        .map(({ id }) => id)
+        .filter(id => !!id) as Array<number>
+
+    await removeTabs(tabIds)
+
+    return tabs
+}
+
+export const removeTabs = (tabsIds: Array<number>) => new Promise(resolve => {
+    chrome.tabs.remove(tabsIds, resolve)
+})
+
+export const getAllTabs = () => new Promise<Array<chrome.tabs.Tab>>(resolve =>
+    chrome.tabs.query({}, tabs => resolve(tabs || []))
+)
+
+// TODO: use rxjs
+export const onActivated = (listener: (info: chrome.tabs.TabActiveInfo) => void) =>
+    chrome.tabs.onActivated.addListener(listener)
+
+export const onUpdated = (listener: (tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => void) =>
+    chrome.tabs.onUpdated.addListener(listener)

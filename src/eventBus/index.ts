@@ -1,6 +1,5 @@
-import { PageVisitModel } from "../domain"
+import { PageModelDictanory, PageVisitModel } from "../domain"
 import { ExtensionSettings } from "../settings"
-import { PageDataDictanory } from "../types"
 
 export enum MessageTypes {
     ACTUAL_PAGE_STORE = 'ACTUAL_PAGE_STORE',
@@ -8,7 +7,7 @@ export enum MessageTypes {
 }
 
 export interface ActualPageStorePayload {
-    pages: PageDataDictanory
+    pages: PageModelDictanory
     history: Array<PageVisitModel>
     settings: ExtensionSettings
 }

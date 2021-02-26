@@ -1,5 +1,6 @@
 import { PageModel, isTrackablePage } from "../domain"
 import { IPagePersistence, IVistsPersistence } from "./interfaces"
+import { normaliseUrl, normalisePage } from "../domain"
 
 export interface PagesDictianory {
     [url: string]: PageModel
@@ -14,6 +15,9 @@ export class HistoryBuilder {
     // Important to track page open with current page at moment of event
     // so not use BrowserStateService for recive state dynamically
     async onPageOpen(url: string, time: number, current?: string) {
+        url = normaliseUrl(url)
+        current = current && normaliseUrl(current)
+
         if (!isTrackablePage(url))
             return
 
@@ -34,6 +38,7 @@ export class HistoryBuilder {
     }
 
     async updateDataAboutPage(page: PageModel) {
+        page = normalisePage(page)
         if (!isTrackablePage(page.url))
             return
 
@@ -43,33 +48,45 @@ export class HistoryBuilder {
     async updatePages(pages: PagesDictianory) {
         const pagesUpdates = Object.keys(pages)
             .filter(url => isTrackablePage(url))
-            .map(url => pages[url])
+            .map(url => normalisePage(pages[url]))
 
         await this.pagesDb.batchCreateOrUpdate(pagesUpdates)
     }
 
-    async updateCurrentlyOpenPages(tabUrls: Array<string>) {
-        const openPages = await this.pagesDb.getAllOpen()
-        const openPagesUrls = openPages.map(({ url }) => url)
+    // will update pages in database which known as open, but currently closed
+    // also mark as open pages which known as closed
+    // and add new pages
+    async updateCurrentlyOpenPages(openPages: Array<PageModel>) {
+        openPages = openPages.map(normalisePage)
+
+        const pagesOpenInDB = await this.pagesDb.getAllOpen()
 
         // Update newly opened pages which was known as closed
-        const newlyOpenedPages = tabUrls
-            .filter(url => !openPagesUrls.includes(url))
-            .map(url => ({
-                url,
+        const newlyOpenedPages = openPages
+            .filter(({ url }) => !pagesOpenInDB.find(page => page.url === url))
+            .map(page => ({
+                ...page,
                 isOpen: true
             }))
 
-        const isOpen = (url: string) => tabUrls.includes(url)
-
         // Update closed pages which was known as opened
-        const closedPages = openPages.map(page => ({
-            ...page,
-            isOpen: isOpen(page.url),
-        }))
-            .filter(page => !page.isOpen)
+        const restPages = pagesOpenInDB.map(page => {
+            const open = openPages.find(({ url }) => page.url === url)
+            if (!open) {
+                return {
+                    ...page,
+                    isOpen: false,
+                }
+            }
+
+            return {
+                ...open,
+                isOpen: true,
+            }
+        })
 
 
-        this.pagesDb.batchCreateOrUpdate([...newlyOpenedPages, ...closedPages])
+        this.pagesDb.batchCreateOrUpdate([...newlyOpenedPages, ...restPages])
     }
 }
+

@@ -1,4 +1,4 @@
-import { DataBusMessage, MessageTypes, ActualPageStorePayload, ChangeSettingsPayload } from "../../dataBus"
+import { DataBusMessage, MessageTypes, ActualPageStorePayload, ChangeSettingsPayload } from "../../eventBus"
 import { ExtensionSettings } from "../../settings"
 import { store, actions } from "./store"
 
